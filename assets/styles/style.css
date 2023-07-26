@@ -1,0 +1,112 @@
+/* RESET */
+/* 1. Use a more-intuitive box-sizing model. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin and padding */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* 3. Allow percentage-based heights in the application */
+html {
+	height: 100%;
+}
+
+body {
+	min-height: 100%; /* 100vh */
+  text-rendering: optimizeSpeed;
+}
+
+
+/* 4. Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+
+/* 5. Add accessible line-height */
+body {
+	line-height: 1.5;
+}
+
+/* 6. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+/* 7. Remove built-in typography styles for forms and buttons */
+input,
+button,
+textarea,
+select,
+a {
+	font: inherit;
+	color: inherit;
+}
+
+a {
+	text-decoration: none;
+}
+
+/* 8. Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* ul,
+ol {
+	list-style: none;
+} */
+
+/* 9. Make media easer to work with instead of their defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+/* 10. Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* STYLING */
+main {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+section {
+  width: 400px;
+  height: 600px;
+  background-color: beige;
+}
