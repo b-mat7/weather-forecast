@@ -1,0 +1,16 @@
+*.sketch
+*.fig
+*.xd
+.prettierignore
+
+*.env
+*.log
+
+# MacOS + Win OS files
+.DS_Store
+thumbs.db
+
+# Folders
+node_modules/
+log/
+**/temp/*.log.
