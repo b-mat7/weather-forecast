@@ -4,8 +4,19 @@
 /* ===== IMPORT & GLOBAL VARIABLES ===== */
 import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
 
-const summaryOutput = document.querySelector(".hero__summary");
-const detailsOutput = document.querySelector(".hero__details");
+// const summaryOutput = document.querySelector(".hero__summary");
+// const detailsOutput = document.querySelector(".hero__details");
+
+const background = document.querySelector("section");
+
+const summaryIconOutput = document.querySelector(".icon");
+const summaryDescriptionOutput = document.querySelector(".description");
+
+const detailsRainOutput = document.querySelector(".rain");
+const detailsWindOutput = document.querySelector(".wind");
+const detailsHumidityOutput = document.querySelector(".humidity");
+const detailsSunOutput = document.querySelector(".sun");
+
 const footerOutput = document.querySelector(".footer");
 
 let startUp = true;
@@ -41,7 +52,7 @@ const fetchLocation = () => {
       })
       .then(ipData => {
         let location = ipData.city.name;
-        document.body.querySelector("#local-loc").value = ipData.city.name;
+        document.body.querySelector("#location").value = ipData.city.name;
         fetchData(location)
       })
   } else {
@@ -52,7 +63,9 @@ const fetchLocation = () => {
 
 
 const refreshLocation = () => {
-  let location = document.body.querySelector("#local-loc").value;
+  // document.body.querySelector("#location").value = "Wyhl";
+
+  let location = document.body.querySelector("#location").value;
   fetchData(location);
 }
 
@@ -86,8 +99,33 @@ const fetchWeatherData = (lat, lon) => {
     return response.json();
   })
   .then(weatherData => {
+    setBackground(weatherData.weather[0].id);
     displayData(weatherData);
   })
+}
+
+
+const setBackground = (id) => {
+  let url;
+  if(id <= 299) {
+    url = "./assets/img/thunderstorm.jpg";
+  } else if(id >= 300 && id <= 399) {
+    url = "./assets/img/drizzle.jpg";
+  } else if(id >= 500 && id <= 599) {
+    url = "./assets/img/rain.jpg";
+  } else if(id >= 600 && id <= 699) {
+    url = "./assets/img/snow.jpg";
+  } else if(id >= 700 && id <= 799) {
+    url = "./assets/img/atmosphere.jpg";
+  } else if(id === 800) {
+    url = "./assets/img/clear.jpg";
+  } else if(id >= 800 && id <= 899) {
+    url = "./assets/img/clouds.jpg";
+  }
+  background.style.backgroundImage = `url(${url})`;
+
+  // background.style.backgroundImage = "url('../img/clear.jpg')";
+  
 }
 
 
@@ -101,48 +139,66 @@ const displayData = (weatherData) => {
     rain = weatherData.rain["1h"];
   }
 
-  const summaryHTML = `
-    <table>
-      <tr>
-        <td>Coords:</td>
-        <td>[${weatherData.coord.lat}, ${weatherData.coord.lon}]</td>
-        <td>(${weatherData.sys.country})</td>
-      </tr>
-    </table>
+  // const summaryHTML = `
+  //   <table>
+  //     <tr>
+  //       <td>Coords:</td>
+  //       <td>[${weatherData.coord.lat}, ${weatherData.coord.lon}]</td>
+  //       <td>(${weatherData.sys.country})</td>
+  //     </tr>
+  //   </table>
+  //   <div class="flexcontainer">
+  //       <img class="icon" src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png">
+  //     <p>${Math.round(weatherData.main.temp)} °C</p>
+  //   </div>
+  //   <p>${weatherData.weather[0].description}</p>    
+  // `;
+
+  // const detailsHTML = `
+  //   <table>
+  //     <tr>
+  //       <td>Wind:</td>
+  //       <td>${Math.round(weatherData.wind.speed)} m/s </td>
+  //     </tr>
+  //     <tr>
+  //       <td>Rain (last h):</td>
+  //       <td>${rain} mm</td>
+  //     </tr>
+  //     <tr>
+  //       <td>Humidity:</td>
+  //       <td>${weatherData.main.humidity} %</td>
+  //     </tr>
+  //     <tr>
+  //       <td>Sun:</td>
+  //       <td>${sunrise} / ${sunset}</td>
+  //     </tr>
+  //   </table>
+  // `;
+  
+  // const timestampHTML = `<p class="align-right">${timestamp}</p>`;
+
+  // summaryOutput.innerHTML = summaryHTML;
+  // detailsOutput.innerHTML = detailsHTML;
+
+  summaryIconOutput.innerHTML = `
     <div class="flexcontainer">
-        <img class="icon" src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png">
+      <img class="icon" src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png">
       <p>${Math.round(weatherData.main.temp)} °C</p>
     </div>
-    <p>${weatherData.weather[0].description}</p>    
   `;
+  summaryDescriptionOutput.textContent = `${weatherData.weather[0].description}`;
 
-  const detailsHTML = `
-    <table>
-      <tr>
-        <td>Wind:</td>
-        <td>${Math.round(weatherData.wind.speed)} m/s </td>
-      </tr>
-      <tr>
-        <td>Rain (last h):</td>
-        <td>${rain} mm</td>
-      </tr>
-      <tr>
-        <td>Humidity:</td>
-        <td>${weatherData.main.humidity} %</td>
-      </tr>
-      <tr>
-        <td>Sun:</td>
-        <td>${sunrise} / ${sunset}</td>
-      </tr>
+  detailsRainOutput.textContent = `${rain} mm`;
+  detailsWindOutput.textContent = `${Math.round(weatherData.wind.speed)} m/s `;
+  detailsHumidityOutput.textContent = `${weatherData.main.humidity} %`;
+  detailsSunOutput.textContent = `${sunrise} / ${sunset}`;
 
-    </table>
+  footerOutput.innerHTML = `
+    <div class="flexcontainer">
+      <p>[${weatherData.coord.lat}, ${weatherData.coord.lon}] (${weatherData.sys.country})</p>
+      <p>${timestamp}</p>
+    </div>
   `;
-
-  const timestampHTML = `<p class="align-right">${timestamp}</p>`;
-
-  summaryOutput.innerHTML = summaryHTML;
-  detailsOutput.innerHTML = detailsHTML;
-  footerOutput.innerHTML = timestampHTML;
 }
 
 fetchLocation();

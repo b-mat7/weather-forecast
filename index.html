@@ -15,12 +15,34 @@
       <h1>Mat's weather Ticker</h1>
       <article class="">
         <div class="header">
-          <input type="text" name="local-loc" id="local-loc">
+          <input type="text" name="local-loc" id="location">
           <button>Refresh</button>
         </div>
         <div class="hero">
-          <div class="hero__summary"></div>
-          <div class="hero__details"></div>
+          <div class="hero__summary">
+            <!-- <div class="hero__summary__item"> -->
+              <div class="icon"></div>
+              <p class="description"></p>
+            </div>
+          <!-- </div> -->
+          <div class="hero__details">
+            <div class="hero__details__item">
+              <h4>Rain (last h)</h4>
+              <p class="rain"></p>
+            </div>
+            <div class="hero__details__item">
+              <h4>Wind</h4>
+              <p class="wind"></p>
+            </div>
+            <div class="hero__details__item">
+              <h4>Humidity</h4>
+              <p class="humidity"></p>
+            </div>
+            <div class="hero__details__item">
+              <h4>Sun</h4>
+              <p class="sun"></p>
+            </div>
+          </div>
         </div>
         <div class="forecast">
           <div class="1"></div>
