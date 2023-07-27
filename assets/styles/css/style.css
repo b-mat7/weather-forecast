@@ -6,15 +6,6 @@
   font-family: Helvetica Neue-Thin;
 }
 
-.flexcontainer {
-  display: flex;
-  align-items: center;
-}
-
-.align-right {
-  text-align: right;
-}
-
 /* 1. Use a more-intuitive box-sizing model. */
 *,
 *::before,
@@ -116,12 +107,12 @@ main {
 }
 
 section {
-  min-width: 375px;
+  min-width: 370px;
   min-height: 660px;
   background-color: darkgray;
   color: hsl(0, 0%, 100%);
   padding: 1rem 1rem;
-  border: 8px solid black;
+  border: 10px solid black;
   border-radius: 20px;
 }
 
@@ -131,11 +122,30 @@ h1 {
 
 input,
 button {
-  color: black;
+  color: hsl(0, 0%, 100%);
+  background: transparent;
+}
+
+input {
+  border: none;
+  border-bottom: 2px solid hsl(0, 0%, 100%);
+  max-width: 40%;
+}
+
+input:focus {
+  outline: none;
 }
 
 button {
   padding: 0.25rem 1rem;
+  border: 2px solid hsl(0, 0%, 100%);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: hsl(0, 0%, 100%);
+  color: black;
 }
 
 .header {
@@ -151,8 +161,7 @@ button {
 
 .hero__summary,
 .hero__details {
-  width: 48.5%;
-  border: 1px solid red;
+  width: 47.5%;
 }
 
 .hero__summary {
@@ -160,8 +169,21 @@ button {
   flex-direction: column;
 }
 
-.hero__summary .icon {
-  background-color: aqua;
+.icon-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.icon-container img {
+  width: 60%;
+}
+.icon-container p {
+  font-size: 1.2rem;
+}
+
+.description {
+  text-align: center;
+  font-size: 1.2rem;
 }
 
 .hero__details {
@@ -175,9 +197,11 @@ button {
   justify-content: space-between;
 }
 
-.footer div {
+.footer {
   padding-top: 1rem;
+  display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 /*# sourceMappingURL=style.css.map */

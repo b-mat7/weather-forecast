@@ -1,15 +1,11 @@
 "use strict"
 
-
 /* ===== IMPORT & GLOBAL VARIABLES ===== */
 import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
 
-// const summaryOutput = document.querySelector(".hero__summary");
-// const detailsOutput = document.querySelector(".hero__details");
-
 const background = document.querySelector("section");
 
-const summaryIconOutput = document.querySelector(".icon");
+const summaryIconOutput = document.querySelector(".icon-container");
 const summaryDescriptionOutput = document.querySelector(".description");
 
 const detailsRainOutput = document.querySelector(".rain");
@@ -22,6 +18,7 @@ const footerOutput = document.querySelector(".footer");
 let startUp = true;
 
 
+/* ===== FETCH DATA FUNCTIONS ===== */
 const fetchLocation = () => {
   if (!startUp) return;
 
@@ -63,7 +60,7 @@ const fetchLocation = () => {
 
 
 const refreshLocation = () => {
-  // document.body.querySelector("#location").value = "Wyhl";
+  document.body.querySelector("#location").value = "Wyhl";
 
   let location = document.body.querySelector("#location").value;
   fetchData(location);
@@ -105,6 +102,7 @@ const fetchWeatherData = (lat, lon) => {
 }
 
 
+/* ===== UPDATE UI FUNCTIONS ===== */
 const setBackground = (id) => {
   let url;
   if(id <= 299) {
@@ -139,52 +137,9 @@ const displayData = (weatherData) => {
     rain = weatherData.rain["1h"];
   }
 
-  // const summaryHTML = `
-  //   <table>
-  //     <tr>
-  //       <td>Coords:</td>
-  //       <td>[${weatherData.coord.lat}, ${weatherData.coord.lon}]</td>
-  //       <td>(${weatherData.sys.country})</td>
-  //     </tr>
-  //   </table>
-  //   <div class="flexcontainer">
-  //       <img class="icon" src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png">
-  //     <p>${Math.round(weatherData.main.temp)} °C</p>
-  //   </div>
-  //   <p>${weatherData.weather[0].description}</p>    
-  // `;
-
-  // const detailsHTML = `
-  //   <table>
-  //     <tr>
-  //       <td>Wind:</td>
-  //       <td>${Math.round(weatherData.wind.speed)} m/s </td>
-  //     </tr>
-  //     <tr>
-  //       <td>Rain (last h):</td>
-  //       <td>${rain} mm</td>
-  //     </tr>
-  //     <tr>
-  //       <td>Humidity:</td>
-  //       <td>${weatherData.main.humidity} %</td>
-  //     </tr>
-  //     <tr>
-  //       <td>Sun:</td>
-  //       <td>${sunrise} / ${sunset}</td>
-  //     </tr>
-  //   </table>
-  // `;
-  
-  // const timestampHTML = `<p class="align-right">${timestamp}</p>`;
-
-  // summaryOutput.innerHTML = summaryHTML;
-  // detailsOutput.innerHTML = detailsHTML;
-
   summaryIconOutput.innerHTML = `
-    <div class="flexcontainer">
-      <img class="icon" src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png">
-      <p>${Math.round(weatherData.main.temp)} °C</p>
-    </div>
+    <img src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png">
+    <p>${Math.round(weatherData.main.temp)} °C</p>
   `;
   summaryDescriptionOutput.textContent = `${weatherData.weather[0].description}`;
 
@@ -194,13 +149,13 @@ const displayData = (weatherData) => {
   detailsSunOutput.textContent = `${sunrise} / ${sunset}`;
 
   footerOutput.innerHTML = `
-    <div class="flexcontainer">
-      <p>[${weatherData.coord.lat}, ${weatherData.coord.lon}] (${weatherData.sys.country})</p>
-      <p>${timestamp}</p>
-    </div>
+    <p>[${weatherData.coord.lat}, ${weatherData.coord.lon}] (${weatherData.sys.country})</p>
+    <p>${timestamp}</p>
   `;
 }
 
-fetchLocation();
+
+/* ===== STARTUP ACTIONS ===== */
+// fetchLocation();
 
 document.body.querySelector(".header button").addEventListener("click", refreshLocation);
