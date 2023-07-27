@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./assets/styles/css/style.css">
-  <script defer src="./assets/js/main.js"></script>
+  <script defer type="module" src="./assets/js/main.js"></script>
   <title>Weather-App</title>
 </head>
 
@@ -13,35 +13,31 @@
   <main>
     <section>
       <h1>Mat's weather Ticker</h1>
-      <article class="local"></article>
-      <article class="remote">
-        <div class="remote__head">
-          <div class="remote__head__location">
-            <input type="text" name="remoteLoc" id="remoteLoc" value="Wyhl">
-            <p>Geo lat/lon: [lat, lon]</p>
-          </div>
-          <div class="remote__head__weather">
-            
-          </div>
+      <article class="">
+        <div class="header">
+          <input type="text" name="local-loc" id="local-loc">
+          <button>Refresh</button>
         </div>
-        <div class="remote__body">
+        <div class="hero">
+          <div class="hero__summary"></div>
+          <div class="hero__details"></div>
+        </div>
+        <div class="forecast">
           <div class="1"></div>
           <div class="2"></div>
           <div class="3"></div>
           <div class="4"></div>
           <div class="5"></div>
         </div>
-        <div class="remote__footer">
-          <div></div>
-          <button>Refresh</button>
-        </div>
+        <div class="footer"></div>
       </article>
     </section>
-    <div class="outputTest"></div>
   </main>
 </body>
 
 </html>
+
+
 
 <!--
 <main>        -> container / via el 

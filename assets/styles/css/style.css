@@ -1,7 +1,20 @@
 @font-face {
-  font-family: "";
-  src: url();
+  font-family: "Helvetica Neue-Thin";
+  src: url("../../fonts/HelveticaNeue-Thin/HelveticaNeue Thin.ttf");
 }
+:root {
+  font-family: Helvetica Neue-Thin;
+}
+
+.flexcontainer {
+  display: flex;
+  align-items: center;
+}
+
+.align-right {
+  text-align: right;
+}
+
 /* 1. Use a more-intuitive box-sizing model. */
 *,
 *::before,
@@ -105,9 +118,27 @@ main {
 }
 
 section {
-  width: 400px;
-  height: 600px;
-  background-color: beige;
+  transform: translate(0, -50%);
+  min-width: 400px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  background-color: aqua;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hero__summary {
+  background-color: lightcoral;
+}
+
+.hero__details {
+  background-color: lightgreen;
 }
 
 /*# sourceMappingURL=style.css.map */

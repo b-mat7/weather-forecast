@@ -25,13 +25,30 @@ main {
 }
 
 section {
-  width: 400px;
-  height: 600px;
-  background-color: beige;
+  transform: translate(0, -50%);
+  min-width: 400px;
+  // height: 600px;
 }
 
-.remote {
+.header {
+  display: flex;
+  justify-content: space-between;
 
+  background-color: aqua;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  // background-color: blue;
+}
+
+.hero__summary {
+  background-color: lightcoral;
+}
+
+.hero__details {
+  background-color: lightgreen;
 }
 
 // ========= footer ==================

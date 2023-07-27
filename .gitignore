@@ -14,3 +14,4 @@ thumbs.db
 node_modules/
 log/
 **/temp/*.log.
+assets/js/api.js

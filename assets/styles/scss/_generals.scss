@@ -8,11 +8,20 @@
 //           GENERAL STYLES
 // ==================================
 :root {
-  // font-family: var.$font-family_primary;
+  font-family: var.$font-family_primary;
   // line-height: var.$line-height_primary;
   // color: var.$color_primary;
 
   // background-color: var.$color_root_background;
 
   // @include mixins.centered();
+}
+
+.flexcontainer {
+  display: flex;
+  align-items: center;
+}
+
+.align-right {
+  text-align: right;
 }
