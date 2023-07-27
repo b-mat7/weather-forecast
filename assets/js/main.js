@@ -149,7 +149,7 @@ const displayData = (weatherData) => {
   detailsSunOutput.textContent = `${sunrise} / ${sunset}`;
 
   footerOutput.innerHTML = `
-    <p>[${weatherData.coord.lat}, ${weatherData.coord.lon}] (${weatherData.sys.country})</p>
+    <p>(${weatherData.sys.country})</p>
     <p>${timestamp}</p>
   `;
 }

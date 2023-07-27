@@ -4,6 +4,8 @@
 }
 :root {
   font-family: Helvetica Neue-Thin;
+  color: hsl(0, 0%, 100%);
+  background-color: hsl(0, 0%, 13%);
 }
 
 /* 1. Use a more-intuitive box-sizing model. */
@@ -107,13 +109,13 @@ main {
 }
 
 section {
+  position: relative;
   min-width: 370px;
   min-height: 660px;
-  background-color: darkgray;
-  color: hsl(0, 0%, 100%);
-  padding: 1rem 1rem;
-  border: 10px solid black;
+  padding: 1.1rem 0.8rem 0.8rem 0.8rem;
+  border: 12px solid hsl(0, 0%, 0%);
   border-radius: 20px;
+  animation: glow 25s infinite;
 }
 
 h1 {
@@ -145,7 +147,7 @@ button {
 
 button:hover {
   background-color: hsl(0, 0%, 100%);
-  color: black;
+  color: hsl(0, 0%, 0%);
 }
 
 .header {
@@ -161,10 +163,10 @@ button:hover {
 
 .hero__summary,
 .hero__details {
-  width: 47.5%;
-}
-
-.hero__summary {
+  width: 48.5%;
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
 }
@@ -178,7 +180,7 @@ button:hover {
   width: 60%;
 }
 .icon-container p {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
 .description {
@@ -187,8 +189,6 @@ button:hover {
 }
 
 .hero__details {
-  display: flex;
-  flex-direction: column;
   gap: 0.5rem;
 }
 
@@ -202,6 +202,67 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.border-item-top {
+  position: absolute;
+  width: 35px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: hsl(0, 0%, 0%);
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -40%);
+}
+
+.border-item-side1 {
+  position: absolute;
+  width: 16px;
+  height: 80px;
+  border-radius: 10px;
+  background-color: hsl(0, 0%, 0%);
+  top: 10%;
+  left: 100%;
+}
+
+.border-item-side2 {
+  position: absolute;
+  width: 16px;
+  height: 48px;
+  border-radius: 10px;
+  background-color: hsl(0, 0%, 0%);
+  top: 28%;
+  left: 100%;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: -16px -16px 70px 4px white;
+  }
+  15% {
+    box-shadow: 10px 10px 70px 4px white;
+  }
+  25% {
+    box-shadow: 16px 16px 70px 4px white;
+  }
+  35% {
+    box-shadow: 10px 10px 70px 4px white;
+  }
+  50% {
+    box-shadow: 16px -16px 70px 4px white;
+  }
+  65% {
+    box-shadow: 10px 10px 70px 4px white;
+  }
+  75% {
+    box-shadow: -16px 16px 70px 4px white;
+  }
+  90% {
+    box-shadow: 10px 10px 70px 4px white;
+  }
+  100% {
+    box-shadow: -16px -16px 70px 4px white;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
