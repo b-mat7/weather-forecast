@@ -1,5 +1,7 @@
 "use strict"
 
+// wind Richung, Bgs
+
 /* ===== IMPORT & GLOBAL VARIABLES ===== */
 import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
 
@@ -60,7 +62,7 @@ const fetchLocation = () => {
 
 
 const refreshLocation = () => {
-  document.body.querySelector("#location").value = "Wyhl";
+  // document.body.querySelector("#location").value = "Wyhl";
 
   let location = document.body.querySelector("#location").value;
   fetchData(location);
@@ -96,41 +98,87 @@ const fetchWeatherData = (lat, lon) => {
     return response.json();
   })
   .then(weatherData => {
-    setBackground(weatherData.weather[0].id);
     displayData(weatherData);
   })
 }
 
 
 /* ===== UPDATE UI FUNCTIONS ===== */
-const setBackground = (id) => {
+const setBackground = (id, remoteTime) => {
   let url;
-  if(id <= 299) {
+  if (id <= 299) {
     url = "./assets/img/thunderstorm.jpg";
-  } else if(id >= 300 && id <= 399) {
+  } else if (id >= 300 && id <= 399) {
     url = "./assets/img/drizzle.jpg";
-  } else if(id >= 500 && id <= 599) {
+  } else if (id >= 500 && id <= 599) {
     url = "./assets/img/rain.jpg";
-  } else if(id >= 600 && id <= 699) {
+  } else if (id >= 600 && id <= 699) {
     url = "./assets/img/snow.jpg";
-  } else if(id >= 700 && id <= 799) {
+  } else if (id >= 700 && id <= 799) {
     url = "./assets/img/atmosphere.jpg";
-  } else if(id === 800) {
+  } else if (id === 800) {
     url = "./assets/img/clear.jpg";
-  } else if(id >= 800 && id <= 899) {
+  } else if (id >= 800 && id <= 899) {
     url = "./assets/img/clouds.jpg";
   }
   background.style.backgroundImage = `url(${url})`;
-
-  // background.style.backgroundImage = "url('../img/clear.jpg')";
-  
 }
 
 
 const displayData = (weatherData) => {
+  
+  // Browser rechnet auto immer UTC in local um
+  // timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
+
+  const secToMs = 1000; // Umrechnung UTC (s) to JavaScript (ms)
+  const timezone = weatherData.timezone;
+  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser rechnet automatisch in vor Ort Zeit
+  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser rechnet automatisch in vor Ort Zeit
+  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser soll nicht umrechnen
+  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser soll nicht umrechnen
+
+  // Zeit des letzten Datensatzes Date-Time (UTC = -2h)
+  const dtUtc = new Date(weatherData.dt * secToMs); 
+  console.log(dtUtc);
+
+  // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser umgerechnet
+  const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
+  const userTime = new Date(Date.now()).toLocaleString(undefined, dateFormatTimeUser); // aktuelle Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
+  const dtUserDate = new Date(dtUtc).toLocaleString(undefined, dateFormatDateUser);    // datensatz Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
+  const dtUserTime = new Date(dtUtc).toLocaleString(undefined, dateFormatTimeUser);    // datensatz Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
+
+    // Remote Ort Zeiten (aktuell + Datensatz) - nicht vom Browser umgerechnet
+  const remoteDate = new Date(Date.now() + timezone * secToMs).toLocaleString(undefined, dateFormatDateUTC); // aktuelle Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
+  const remoteTime = new Date(Date.now() + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC); // aktuelle Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
+  const dtRemoteDate = new Date(dtUtc + timezone * secToMs).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
+  const dtRemoteTime = new Date(dtUtc + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
+
+  console.log(userDate);
+  console.log(userTime);
+  console.log(dtUserDate);
+  console.log(dtUserTime);
+
+  console.log(remoteDate);
+  console.log(remoteTime);
+  console.log(dtRemoteDate);
+  console.log(dtRemoteTime);
+
   const timestamp = new Date(Date.now()).toLocaleString("de");
-  const sunrise = new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString("de", {minute: "2-digit", hour: "2-digit"});
-  const sunset = new Date(weatherData.sys.sunset * 1000).toLocaleTimeString("de", {minute: "2-digit", hour: "2-digit"});
+  const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);
+  const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);
+
+  setBackground(weatherData.weather[0].id, remoteTime);
+
+  const degrees = weatherData.wind.deg;
+  let direction;
+  if (degrees > 335 || degrees <= 20) direction = "N";
+  else if (degrees > 20 || degrees <= 65) direction = "NE";
+  else if (degrees > 65 || degrees <= 110) direction = "E";
+  else if (degrees > 110 || degrees <= 155) direction = "SE";
+  else if (degrees > 155 || degrees <= 200) direction = "S";
+  else if (degrees > 200 || degrees <= 245) direction = "SW";
+  else if (degrees > 245 || degrees <= 290) direction = "W";
+  else if (degrees > 290 || degrees <= 335) direction = "NW";
   
   let rain = "--";
   if(weatherData.rain){
@@ -144,18 +192,18 @@ const displayData = (weatherData) => {
   summaryDescriptionOutput.textContent = `${weatherData.weather[0].description}`;
 
   detailsRainOutput.textContent = `${rain} mm`;
-  detailsWindOutput.textContent = `${Math.round(weatherData.wind.speed)} m/s `;
+  detailsWindOutput.textContent = `(${direction}) ${Math.round(weatherData.wind.speed)} m/s`;
   detailsHumidityOutput.textContent = `${weatherData.main.humidity} %`;
   detailsSunOutput.textContent = `${sunrise} / ${sunset}`;
 
   footerOutput.innerHTML = `
-    <p>(${weatherData.sys.country})</p>
+    <p>Local: ${remoteTime} (${weatherData.sys.country})</p>
     <p>${timestamp}</p>
   `;
 }
 
 
 /* ===== STARTUP ACTIONS ===== */
-// fetchLocation();
+fetchLocation();
 
 document.body.querySelector(".header button").addEventListener("click", refreshLocation);
