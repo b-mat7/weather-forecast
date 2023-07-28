@@ -90,7 +90,7 @@ const fetchData = (location) => {
 
 
 const fetchWeatherData = (lat, lon) => {
-  let fetchStrWeather = `https://${endpointOpenWeather}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang="de"`;
+  let fetchStrWeather = `https://${endpointOpenWeather}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de`;
 
   fetch(fetchStrWeather)
   .then(response => {
@@ -105,14 +105,6 @@ const fetchWeatherData = (lat, lon) => {
 
 /* ===== UPDATE UI FUNCTIONS ===== */
 const setBackground = (id, remoteTime) => {
-  console.log(remoteTime);
-
-  if(remoteTime > "00:00" && remoteTime < "15:00") {
-    console.log(true);
-  } else {
-    console.log(false);
-  }
-
   let url;
   if (id <= 299) {
     if(remoteTime >= "07:00" && remoteTime <= "19:00"){
@@ -179,9 +171,8 @@ const setBackground = (id, remoteTime) => {
   background.style.backgroundImage = `url(${url})`;
 }
 
+const calcDates = (weatherData) => {
 
-const displayData = (weatherData) => {
-  
   // Browser rechnet auto immer UTC in local um
   // timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
 
@@ -222,14 +213,20 @@ const displayData = (weatherData) => {
   const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);
   const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);
 
-  setBackground(weatherData.weather[0].id, remoteTime);
+  return [sunrise, sunset, remoteTime, timestamp];
+}
+
+const displayData = (weatherData) => {
+  const dates = calcDates(weatherData);
+
+  setBackground(weatherData.weather[0].id, dates[2]);
 
   const degrees = weatherData.wind.deg;
   let direction;
   if (degrees > 335 || degrees <= 20) direction = "N";
-  else if (degrees > 20 || degrees <= 65) direction = "NE";
-  else if (degrees > 65 || degrees <= 110) direction = "E";
-  else if (degrees > 110 || degrees <= 155) direction = "SE";
+  else if (degrees > 20 || degrees <= 65) direction = "NO";
+  else if (degrees > 65 || degrees <= 110) direction = "O";
+  else if (degrees > 110 || degrees <= 155) direction = "SO";
   else if (degrees > 155 || degrees <= 200) direction = "S";
   else if (degrees > 200 || degrees <= 245) direction = "SW";
   else if (degrees > 245 || degrees <= 290) direction = "W";
@@ -249,11 +246,11 @@ const displayData = (weatherData) => {
   detailsRainOutput.textContent = `${rain} mm`;
   detailsWindOutput.textContent = `(${direction}) ${Math.round(weatherData.wind.speed)} m/s`;
   detailsHumidityOutput.textContent = `${weatherData.main.humidity} %`;
-  detailsSunOutput.textContent = `${sunrise} / ${sunset}`;
+  detailsSunOutput.textContent = `${dates[0]} / ${dates[1]}`;
 
   footerOutput.innerHTML = `
-    <p>Local: ${remoteTime} (${weatherData.sys.country})</p>
-    <p>${timestamp}</p>
+    <p>Lokal: ${dates[2]} (${weatherData.sys.country})</p>
+    <p>${dates[3]}</p>
   `;
 }
 

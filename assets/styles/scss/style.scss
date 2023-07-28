@@ -29,6 +29,9 @@ section {
   border: 12px solid var.$color_accent1;
   border-radius: 20px;
 
+  background-size: cover;
+  background-position: center;
+
   animation: glow 25s infinite;
 }
 
@@ -118,6 +121,11 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  p {
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+  }
 }
 
 .border-item-top {

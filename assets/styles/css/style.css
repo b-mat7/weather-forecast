@@ -115,6 +115,8 @@ section {
   padding: 1.1rem 0.8rem 0.8rem 0.8rem;
   border: 12px solid hsl(0, 0%, 0%);
   border-radius: 20px;
+  background-size: cover;
+  background-position: center;
   animation: glow 25s infinite;
 }
 
@@ -202,6 +204,10 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.footer p {
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
 }
 
 .border-item-top {
