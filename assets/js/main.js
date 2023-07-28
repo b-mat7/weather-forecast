@@ -105,22 +105,77 @@ const fetchWeatherData = (lat, lon) => {
 
 /* ===== UPDATE UI FUNCTIONS ===== */
 const setBackground = (id, remoteTime) => {
+  console.log(remoteTime);
+
+  if(remoteTime > "00:00" && remoteTime < "15:00") {
+    console.log(true);
+  } else {
+    console.log(false);
+  }
+
   let url;
   if (id <= 299) {
-    url = "./assets/img/thunderstorm.jpg";
+    if(remoteTime >= "07:00" && remoteTime <= "19:00"){
+      url = "./assets/img/thunderstorm/thunderstorm_day.jpeg";
+    } else {
+      url = "./assets/img/thunderstorm/thunderstorm_night.jpeg";
+    }
   } else if (id >= 300 && id <= 399) {
-    url = "./assets/img/drizzle.jpg";
+    if(remoteTime >= "07:00" && remoteTime <= "19:00"){
+      url = "./assets/img/drizzle/drizzle_day.jpeg";
+    } else {
+      url = "./assets/img/drizzle/drizzle_night.jpeg";
+    }
   } else if (id >= 500 && id <= 599) {
-    url = "./assets/img/rain.jpg";
+    if(remoteTime >= "07:00" && remoteTime <= "19:00"){
+      url = "./assets/img/rain/rain_day.jpeg";
+    } else {
+      url = "./assets/img/rain/rain_night.jpeg";
+    }
   } else if (id >= 600 && id <= 699) {
-    url = "./assets/img/snow.jpg";
+    if(remoteTime >= "07:00" && remoteTime <= "19:00"){
+      url = "./assets/img/snow/snow_day.jpeg";
+    } else {
+      url = "./assets/img/snow/snow_night.jpeg";
+    }
   } else if (id >= 700 && id <= 799) {
-    url = "./assets/img/atmosphere.jpg";
+    url = "./assets/img/atmosphere/atmosphere.jpeg";
   } else if (id === 800) {
-    url = "./assets/img/clear.jpg";
+    if(remoteTime >= "06:00" && remoteTime <= "11:59"){
+      url = "./assets/img/clear/clear_morning.jpeg";
+    } else if (remoteTime >= "12:00" && remoteTime <= "17:59"){
+      url = "./assets/img/clear/clear_day.jpeg";
+    } else if (remoteTime >= "18:00" && remoteTime <= "20:59"){
+      url = "./assets/img/clear/clear_evening.jpeg";
+    } else {
+      url = "./assets/img/clear/clear_night.jpeg";
+    }
   } else if (id >= 800 && id <= 899) {
-    url = "./assets/img/clouds.jpg";
+    if(remoteTime >= "06:00" && remoteTime <= "11:59"){
+      url = "./assets/img/clouds/clouds_morning.jpeg";
+    } else if (remoteTime >= "12:00" && remoteTime <= "17:59"){
+      url = "./assets/img/clouds/clouds_day.jpeg";
+    } else if (remoteTime >= "18:00" && remoteTime <= "20:59"){
+      url = "./assets/img/clouds/clouds_evening.jpeg";
+    } else {
+      url = "./assets/img/clouds/clouds_night.jpeg";
+    }
   }
+  // if (id <= 299) {
+  //   url = "./assets/img/thunderstorm.jpg";
+  // } else if (id >= 300 && id <= 399) {
+  //   url = "./assets/img/drizzle.jpg";
+  // } else if (id >= 500 && id <= 599) {
+  //   url = "./assets/img/rain.jpg";
+  // } else if (id >= 600 && id <= 699) {
+  //   url = "./assets/img/snow.jpg";
+  // } else if (id >= 700 && id <= 799) {
+  //   url = "./assets/img/atmosphere.jpg";
+  // } else if (id === 800) {
+  //   url = "./assets/img/clear.jpg";
+  // } else if (id >= 800 && id <= 899) {
+  //   url = "./assets/img/clouds.jpg";
+  // }
   background.style.backgroundImage = `url(${url})`;
 }
 
