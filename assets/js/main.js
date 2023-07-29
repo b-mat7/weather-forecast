@@ -22,6 +22,21 @@ const test = document.querySelector(".testOutput");
 
 let startUp = true;
 
+/* ===== FETCH 24h ===== */
+const fetch24hWeather = (lat,lon) => {
+  let fetchStr24h = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de&cnt=8`;
+
+  fetch(fetchStr24h)
+    .then(response => {
+      if(!response.ok) throw new Error("FORECAST24h response.ok FAILED");
+      return response.json();
+    })
+    .then(foreCastData => {
+      console.log(foreCastData);
+      test.textContent = `${foreCastData.list[0].pop}`;
+    })
+}
+
 
 /* ===== FETCH DATA FUNCTIONS ===== */
 const fetchLocation = () => {
@@ -34,7 +49,7 @@ const fetchLocation = () => {
       (position) => {
         lat = position.coords.latitude;
         lon = position.coords.longitude;
-        fetchWeatherData(lat, lon);
+        fetchCurrentWeather(lat, lon);
       },
       (error) => {
         console.log("Browser location FAILED");
@@ -55,10 +70,10 @@ const fetchLocation = () => {
       .then(ipData => {
         let location = ipData.city.name;
         document.body.querySelector("#location").value = ipData.city.name;
-        fetchData(location)
+        fetchCoordinates(location)
       })
   } else {
-    fetchWeatherData(lat, lon);
+    fetchCurrentWeather(lat, lon);
   }
   startUp = false;
 }
@@ -68,11 +83,11 @@ const refreshLocation = () => {
   // document.body.querySelector("#location").value = "Wyhl";
 
   let location = document.body.querySelector("#location").value;
-  fetchData(location);
+  fetchCoordinates(location);
 }
 
 
-const fetchData = (location) => {
+const fetchCoordinates = (location) => {
   let lat, lon;
 
   let fetchStrGeo = `http://${endpointOpenWeather}/geo/1.0/direct?q=${location}&limit=1&appid=${apiKeyOpenWeather}`;
@@ -87,12 +102,14 @@ const fetchData = (location) => {
       lon = geoData[0].lon;
     })
     .then(()=> {
-      fetchWeatherData(lat, lon);
+      fetchCurrentWeather(lat, lon);
+
+      fetch24hWeather(lat, lon);
     })
 }
 
 
-const fetchWeatherData = (lat, lon) => {
+const fetchCurrentWeather = (lat, lon) => {
   let fetchStrWeather = `https://${endpointOpenWeather}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de`;
 
   fetch(fetchStrWeather)
@@ -101,7 +118,7 @@ const fetchWeatherData = (lat, lon) => {
     return response.json();
   })
   .then(weatherData => {
-    displayData(weatherData);
+    displayCurrentWeather(weatherData);
   })
 }
 
@@ -194,7 +211,6 @@ const calcDates = (weatherData) => {
 
   // Zeit des letzten Datensatzes (Date-Time in UTC)
   const dtUtc = new Date(weatherData.dt * secToMs); 
-  console.log(dtUtc);
 
   // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser auto-umgerechnet
   const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort-Zeitzone
@@ -208,28 +224,24 @@ const calcDates = (weatherData) => {
   const dtRemoteDate = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
   const dtRemoteTime = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
 
-  console.log(userDate);
-  console.log(userTime);
-  console.log(dtUserDate);
-  console.log(dtUserTime);
+  // console.log(userDate);
+  // console.log(userTime);
+  // console.log(dtUserDate);
+  // console.log(dtUserTime);
 
-  console.log(remoteDate);
-  console.log(remoteTime);
-  console.log(dtRemoteDate);
-  console.log(dtRemoteTime);
+  // console.log(remoteDate);
+  // console.log(remoteTime);
+  // console.log(dtRemoteDate);
+  // console.log(dtRemoteTime);
 
   const timestamp = new Date(Date.now()).toLocaleString("de");
   const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
   const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
 
-  console.log(sunrise);
-  console.log(sunset);
-  console.log(remoteTime);
-  console.log(timestamp);
   return [sunrise, sunset, remoteTime, timestamp];
 }
 
-const displayData = (weatherData) => {
+const displayCurrentWeather = (weatherData) => {
   const dates = calcDates(weatherData);
 
   setBackground(weatherData.weather[0].id, dates[2]);
