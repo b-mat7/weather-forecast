@@ -16,26 +16,11 @@ const detailsHumidityOutput = document.querySelector(".humidity");
 const detailsTimeOutput = document.querySelector(".time");
 const detailsSunOutput = document.querySelector(".sun");
 
+const forecast24hOutput = document.querySelector(".forecast24h");
+
 const footerOutput = document.querySelector(".footer");
 
-const test = document.querySelector(".testOutput");
-
 let startUp = true;
-
-/* ===== FETCH 24h ===== */
-const fetch24hWeather = (lat,lon) => {
-  let fetchStr24h = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de&cnt=8`;
-
-  fetch(fetchStr24h)
-    .then(response => {
-      if(!response.ok) throw new Error("FORECAST24h response.ok FAILED");
-      return response.json();
-    })
-    .then(foreCastData => {
-      console.log(foreCastData);
-      test.textContent = `${foreCastData.list[0].pop}`;
-    })
-}
 
 
 /* ===== FETCH DATA FUNCTIONS ===== */
@@ -79,14 +64,6 @@ const fetchLocation = () => {
 }
 
 
-const refreshLocation = () => {
-  // document.body.querySelector("#location").value = "Wyhl";
-
-  let location = document.body.querySelector("#location").value;
-  fetchCoordinates(location);
-}
-
-
 const fetchCoordinates = (location) => {
   let lat, lon;
 
@@ -120,6 +97,81 @@ const fetchCurrentWeather = (lat, lon) => {
   .then(weatherData => {
     displayCurrentWeather(weatherData);
   })
+}
+
+
+const fetch24hWeather = (lat,lon) => {
+  let fetchStr24h = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de&cnt=8`;
+
+  fetch(fetchStr24h)
+    .then(response => {
+      if(!response.ok) throw new Error("FORECAST24h response.ok FAILED");
+      return response.json();
+    })
+    .then(foreCastData => {
+      display24hWeather(foreCastData);
+    })
+}
+
+
+/* ===== UTILITY FUNCTIONS ===== */
+const refreshLocation = () => {
+  // document.body.querySelector("#location").value = "Wyhl";
+
+  let location = document.body.querySelector("#location").value;
+  fetchCoordinates(location);
+}
+
+
+const calcDates = (weatherData) => {
+
+  /*
+  - API liefert alle Zeiten in UTC (s) --*1000--> JS (ms)
+  - Browser immer auto-umrechnung: UTC in vor Ort
+  - im format{}: timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
+
+  - .toLocaleDateString("de", weekday:"long")
+  */
+
+  // Umrechnung UTC (s) -> JS (ms) + API liefert timezone auch in s
+  const secToMs = 1000;
+  const timezone = weatherData.timezone * secToMs;
+  
+  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
+  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
+  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
+  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
+
+  // Zeit des letzten Datensatzes (Date-Time in UTC)
+  const dtUtc = new Date(weatherData.dt * secToMs); 
+
+  // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser auto-umgerechnet
+  const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort-Zeitzone
+  const userTime = new Date(Date.now()).toLocaleString(undefined, dateFormatTimeUser); // aktuelle Zeit - User vor Ort-Zeitzone
+  const dtUserDate = new Date(dtUtc).toLocaleString(undefined, dateFormatDateUser);    // datensatz Zeit - User vor Ort-Zeitzone
+  const dtUserTime = new Date(dtUtc).toLocaleString(undefined, dateFormatTimeUser);    // datensatz Zeit - User vor Ort-Zeitzone
+
+  // Remote Ort Zeiten (aktuell + Datensatz) - keine Browser auto-umrechnung
+  const remoteDate = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatDateUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
+  const remoteTime = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatTimeUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
+  const dtRemoteDate = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
+  const dtRemoteTime = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
+
+  // console.log(userDate);
+  // console.log(userTime);
+  // console.log(dtUserDate);
+  // console.log(dtUserTime);
+
+  // console.log(remoteDate);
+  // console.log(remoteTime);
+  // console.log(dtRemoteDate);
+  // console.log(dtRemoteTime);
+
+  const timestamp = new Date(Date.now()).toLocaleString("de");
+  const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
+  const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
+
+  return [sunrise, sunset, remoteTime, timestamp];
 }
 
 
@@ -173,73 +225,9 @@ const setBackground = (id, remoteTime) => {
       url = "./assets/img/clouds/clouds_night.jpeg";
     }
   }
-  // if (id <= 299) {
-  //   url = "./assets/img/thunderstorm.jpg";
-  // } else if (id >= 300 && id <= 399) {
-  //   url = "./assets/img/drizzle.jpg";
-  // } else if (id >= 500 && id <= 599) {
-  //   url = "./assets/img/rain.jpg";
-  // } else if (id >= 600 && id <= 699) {
-  //   url = "./assets/img/snow.jpg";
-  // } else if (id >= 700 && id <= 799) {
-  //   url = "./assets/img/atmosphere.jpg";
-  // } else if (id === 800) {
-  //   url = "./assets/img/clear.jpg";
-  // } else if (id >= 800 && id <= 899) {
-  //   url = "./assets/img/clouds.jpg";
-  // }
   background.style.backgroundImage = `url(${url})`;
 }
 
-const calcDates = (weatherData) => {
-
-  /*
-  - Browser immer auto-umrechnung: UTC in vor Ort
-  - im format{}: timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
-
-  - .toLocaleDateString("de", weekday:"long")
-  */
-
-  // Umrechnung UTC (s) -> JS (ms) + API liefert timezone auch in s
-  const secToMs = 1000;
-  const timezone = weatherData.timezone * secToMs;
-  
-  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
-  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
-  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
-  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
-
-  // Zeit des letzten Datensatzes (Date-Time in UTC)
-  const dtUtc = new Date(weatherData.dt * secToMs); 
-
-  // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser auto-umgerechnet
-  const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort-Zeitzone
-  const userTime = new Date(Date.now()).toLocaleString(undefined, dateFormatTimeUser); // aktuelle Zeit - User vor Ort-Zeitzone
-  const dtUserDate = new Date(dtUtc).toLocaleString(undefined, dateFormatDateUser);    // datensatz Zeit - User vor Ort-Zeitzone
-  const dtUserTime = new Date(dtUtc).toLocaleString(undefined, dateFormatTimeUser);    // datensatz Zeit - User vor Ort-Zeitzone
-
-  // Remote Ort Zeiten (aktuell + Datensatz) - keine Browser auto-umrechnung
-  const remoteDate = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatDateUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
-  const remoteTime = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatTimeUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
-  const dtRemoteDate = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
-  const dtRemoteTime = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
-
-  // console.log(userDate);
-  // console.log(userTime);
-  // console.log(dtUserDate);
-  // console.log(dtUserTime);
-
-  // console.log(remoteDate);
-  // console.log(remoteTime);
-  // console.log(dtRemoteDate);
-  // console.log(dtRemoteTime);
-
-  const timestamp = new Date(Date.now()).toLocaleString("de");
-  const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
-  const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
-
-  return [sunrise, sunset, remoteTime, timestamp];
-}
 
 const displayCurrentWeather = (weatherData) => {
   const dates = calcDates(weatherData);
@@ -280,6 +268,26 @@ const displayCurrentWeather = (weatherData) => {
   `;
 }
 
+
+const display24hWeather = (foreCastData) => {
+
+  // date calc
+
+  forecast24hOutput.innerHTML = ``;
+
+  foreCastData.list.forEach((item) => {
+    const outputHTML = `
+      <div class="forecast24h-item">
+        <p>${item.dt_txt.slice(10, 16)}</p>
+        <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}.png">
+        <p>${item.weather[0].main}</p>
+        <p>${Math.round(item.main.temp)} °C</p>
+        <p>${Math.round(item.wind.speed)} m/s</p>
+      </div>
+    `;
+    forecast24hOutput.insertAdjacentHTML("beforeend", outputHTML);
+  })
+}
 
 /* ===== STARTUP ACTIONS ===== */
 fetchLocation();

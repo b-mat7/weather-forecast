@@ -112,7 +112,7 @@ section {
   position: relative;
   min-width: 370px;
   min-height: 660px;
-  padding: 1.1rem 0.8rem 0.8rem 0.8rem;
+  padding: 1.1rem 0.65rem 0.65rem 0.65rem;
   border: 12px solid hsl(0, 0%, 0%);
   border-radius: 20px;
   background-size: cover;
@@ -200,6 +200,22 @@ button:hover {
   justify-content: space-between;
 }
 
+.forecast24h {
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.forecast24h .forecast24h-item {
+  padding: 0.3rem 0;
+  max-width: 40px;
+  font-size: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 5px;
+  backdrop-filter: blur(15px);
+}
+
 .footer {
   padding-top: 1rem;
   display: flex;
@@ -207,7 +223,8 @@ button:hover {
   align-items: center;
 }
 .footer p {
-  border-radius: 20px;
+  padding: 0 0.3rem;
+  border-radius: 10px;
   backdrop-filter: blur(15px);
 }
 
