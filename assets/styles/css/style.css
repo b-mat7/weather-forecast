@@ -165,7 +165,8 @@ button:hover {
 
 .hero__summary,
 .hero__details {
-  width: 48.5%;
+  width: 156px;
+  min-height: 160px;
   backdrop-filter: blur(15px);
   border-radius: 20px;
   padding: 0.5rem;
@@ -191,7 +192,7 @@ button:hover {
 }
 
 .hero__details {
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .hero__details__item {
@@ -202,7 +203,7 @@ button:hover {
 .footer {
   padding-top: 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
 .footer p {

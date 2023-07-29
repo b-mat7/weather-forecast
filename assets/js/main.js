@@ -13,9 +13,12 @@ const summaryDescriptionOutput = document.querySelector(".description");
 const detailsRainOutput = document.querySelector(".rain");
 const detailsWindOutput = document.querySelector(".wind");
 const detailsHumidityOutput = document.querySelector(".humidity");
+const detailsTimeOutput = document.querySelector(".time");
 const detailsSunOutput = document.querySelector(".sun");
 
 const footerOutput = document.querySelector(".footer");
+
+const test = document.querySelector(".testOutput");
 
 let startUp = true;
 
@@ -173,31 +176,37 @@ const setBackground = (id, remoteTime) => {
 
 const calcDates = (weatherData) => {
 
-  // Browser rechnet auto immer UTC in local um
-  // timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
+  /*
+  - Browser immer auto-umrechnung: UTC in vor Ort
+  - im format{}: timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
 
-  const secToMs = 1000; // Umrechnung UTC (s) to JavaScript (ms)
-  const timezone = weatherData.timezone;
-  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser rechnet automatisch in vor Ort Zeit
-  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser rechnet automatisch in vor Ort Zeit
-  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser soll nicht umrechnen
-  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser soll nicht umrechnen
+  - .toLocaleDateString("de", weekday:"long")
+  */
 
-  // Zeit des letzten Datensatzes Date-Time (UTC = -2h)
+  // Umrechnung UTC (s) -> JS (ms) + API liefert timezone auch in s
+  const secToMs = 1000;
+  const timezone = weatherData.timezone * secToMs;
+  
+  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
+  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
+  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
+  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
+
+  // Zeit des letzten Datensatzes (Date-Time in UTC)
   const dtUtc = new Date(weatherData.dt * secToMs); 
   console.log(dtUtc);
 
-  // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser umgerechnet
-  const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
-  const userTime = new Date(Date.now()).toLocaleString(undefined, dateFormatTimeUser); // aktuelle Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
-  const dtUserDate = new Date(dtUtc).toLocaleString(undefined, dateFormatDateUser);    // datensatz Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
-  const dtUserTime = new Date(dtUtc).toLocaleString(undefined, dateFormatTimeUser);    // datensatz Zeit - User vor Ort - Zeitzone (vom Browser umgerechnet)
+  // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser auto-umgerechnet
+  const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort-Zeitzone
+  const userTime = new Date(Date.now()).toLocaleString(undefined, dateFormatTimeUser); // aktuelle Zeit - User vor Ort-Zeitzone
+  const dtUserDate = new Date(dtUtc).toLocaleString(undefined, dateFormatDateUser);    // datensatz Zeit - User vor Ort-Zeitzone
+  const dtUserTime = new Date(dtUtc).toLocaleString(undefined, dateFormatTimeUser);    // datensatz Zeit - User vor Ort-Zeitzone
 
-    // Remote Ort Zeiten (aktuell + Datensatz) - nicht vom Browser umgerechnet
-  const remoteDate = new Date(Date.now() + timezone * secToMs).toLocaleString(undefined, dateFormatDateUTC); // aktuelle Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
-  const remoteTime = new Date(Date.now() + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC); // aktuelle Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
-  const dtRemoteDate = new Date(dtUtc + timezone * secToMs).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
-  const dtRemoteTime = new Date(dtUtc + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort - Zeitzone (von uns gerechnet, no Browser auto umrechnung)
+  // Remote Ort Zeiten (aktuell + Datensatz) - keine Browser auto-umrechnung
+  const remoteDate = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatDateUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
+  const remoteTime = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatTimeUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
+  const dtRemoteDate = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
+  const dtRemoteTime = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
 
   console.log(userDate);
   console.log(userTime);
@@ -210,9 +219,13 @@ const calcDates = (weatherData) => {
   console.log(dtRemoteTime);
 
   const timestamp = new Date(Date.now()).toLocaleString("de");
-  const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);
-  const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone * secToMs).toLocaleString(undefined, dateFormatTimeUTC);
+  const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
+  const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
 
+  console.log(sunrise);
+  console.log(sunset);
+  console.log(remoteTime);
+  console.log(timestamp);
   return [sunrise, sunset, remoteTime, timestamp];
 }
 
@@ -246,10 +259,11 @@ const displayData = (weatherData) => {
   detailsRainOutput.textContent = `${rain} mm`;
   detailsWindOutput.textContent = `(${direction}) ${Math.round(weatherData.wind.speed)} m/s`;
   detailsHumidityOutput.textContent = `${weatherData.main.humidity} %`;
+  detailsTimeOutput. textContent = `${dates[2]} (${weatherData.sys.country})`;
   detailsSunOutput.textContent = `${dates[0]} / ${dates[1]}`;
 
   footerOutput.innerHTML = `
-    <p>Lokal: ${dates[2]} (${weatherData.sys.country})</p>
+    <!-- <p>Placeholder</p> -->
     <p>${dates[3]}</p>
   `;
 }
