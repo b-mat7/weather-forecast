@@ -1,7 +1,5 @@
 "use strict"
 
-// wind Richung, Bgs
-
 /* ===== IMPORT & GLOBAL VARIABLES ===== */
 import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
 
@@ -271,7 +269,15 @@ const displayCurrentWeather = (weatherData) => {
 
 const display24hWeather = (foreCastData) => {
 
-  // date calc
+  /*
+    console.log(foreCastData);
+    // date calc
+  const timezone = foreCastData.city.timezone * 1000;
+  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }; 
+
+  const time = new Date(foreCastData.list[0].dt * 1000 + timezone).toLocaleString(undefined, dateFormatTimeUTC);
+  console.log(time);
+  */
 
   forecast24hOutput.innerHTML = ``;
 
