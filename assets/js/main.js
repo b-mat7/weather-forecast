@@ -15,6 +15,7 @@ const detailsTimeOutput = document.querySelector(".time");
 const detailsSunOutput = document.querySelector(".sun");
 
 const forecast24hOutput = document.querySelector(".forecast24h");
+const forecast3dOutput = document.querySelector(".forecast3d");
 
 const footerOutput = document.querySelector(".footer");
 
@@ -78,22 +79,22 @@ const fetchCoordinates = (location) => {
     })
     .then(()=> {
       fetchCurrentWeather(lat, lon);
-
       fetch24hWeather(lat, lon);
+      fetch3dWeather(lat, lon);
     })
 }
 
 
 const fetchCurrentWeather = (lat, lon) => {
-  let fetchStrWeather = `https://${endpointOpenWeather}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de`;
+  let fetchStrCurrent = `https://${endpointOpenWeather}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de`;
 
-  fetch(fetchStrWeather)
+  fetch(fetchStrCurrent)
   .then(response => {
     if(!response.ok) throw new Error("WEATHER response.ok FAILED");
     return response.json();
   })
-  .then(weatherData => {
-    displayCurrentWeather(weatherData);
+  .then(currentWeatherData => {
+    displayCurrentWeather(currentWeatherData);
   })
 }
 
@@ -106,22 +107,34 @@ const fetch24hWeather = (lat,lon) => {
       if(!response.ok) throw new Error("FORECAST24h response.ok FAILED");
       return response.json();
     })
-    .then(foreCastData => {
-      display24hWeather(foreCastData);
+    .then(forecast24hData => {
+      display24hWeather(forecast24hData);
+    })
+}
+
+
+const fetch3dWeather = (lat, lon) => {
+  let fetchStr3d = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de&cnt=32`;
+
+  fetch(fetchStr3d)
+    .then(response => {
+      if(!response.ok) throw new Error("FORECAST3d response.ok FAILED");
+      return response.json();
+    })
+    .then(forecast3dData => {
+      display3dWeather(forecast3dData)
     })
 }
 
 
 /* ===== UTILITY FUNCTIONS ===== */
 const refreshLocation = () => {
-  // document.body.querySelector("#location").value = "Wyhl";
-
   let location = document.body.querySelector("#location").value;
   fetchCoordinates(location);
 }
 
 
-const calcDates = (weatherData) => {
+const calcDates = (currentWeatherData) => {
 
   /*
   - API liefert alle Zeiten in UTC (s) --*1000--> JS (ms)
@@ -133,7 +146,7 @@ const calcDates = (weatherData) => {
 
   // Umrechnung UTC (s) -> JS (ms) + API liefert timezone auch in s
   const secToMs = 1000;
-  const timezone = weatherData.timezone * secToMs;
+  const timezone = currentWeatherData.timezone * secToMs;
   
   const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
   const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
@@ -141,7 +154,7 @@ const calcDates = (weatherData) => {
   const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
 
   // Zeit des letzten Datensatzes (Date-Time in UTC)
-  const dtUtc = new Date(weatherData.dt * secToMs); 
+  const dtUtc = new Date(currentWeatherData.dt * secToMs); 
 
   // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser auto-umgerechnet
   const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort-Zeitzone
@@ -166,8 +179,8 @@ const calcDates = (weatherData) => {
   // console.log(dtRemoteTime);
 
   const timestamp = new Date(Date.now()).toLocaleString("de");
-  const sunrise = new Date((weatherData.sys.sunrise * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
-  const sunset = new Date((weatherData.sys.sunset * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
+  const sunrise = new Date((currentWeatherData.sys.sunrise * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
+  const sunset = new Date((currentWeatherData.sys.sunset * secToMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
 
   return [sunrise, sunset, remoteTime, timestamp];
 }
@@ -227,12 +240,12 @@ const setBackground = (id, remoteTime) => {
 }
 
 
-const displayCurrentWeather = (weatherData) => {
-  const dates = calcDates(weatherData);
+const displayCurrentWeather = (currentWeatherData) => {
+  const dates = calcDates(currentWeatherData);
 
-  setBackground(weatherData.weather[0].id, dates[2]);
+  setBackground(currentWeatherData.weather[0].id, dates[2]);
 
-  const degrees = weatherData.wind.deg;
+  const degrees = currentWeatherData.wind.deg;
   let direction;
   if (degrees > 335 || degrees <= 20) direction = "N";
   else if (degrees > 20 || degrees <= 65) direction = "NO";
@@ -244,20 +257,20 @@ const displayCurrentWeather = (weatherData) => {
   else if (degrees > 290 || degrees <= 335) direction = "NW";
   
   let rain = "--";
-  if(weatherData.rain){
-    rain = weatherData.rain["1h"];
+  if(currentWeatherData.rain){
+    rain = currentWeatherData.rain["1h"];
   }
 
   summaryIconOutput.innerHTML = `
-    <img src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png">
-    <p>${Math.round(weatherData.main.temp)} °C</p>
+    <img src="https://openweathermap.org/img/wn/${currentWeatherData.weather[0].icon}.png">
+    <p>${Math.round(currentWeatherData.main.temp)} °C</p>
   `;
-  summaryDescriptionOutput.textContent = `${weatherData.weather[0].description}`;
+  summaryDescriptionOutput.textContent = `${currentWeatherData.weather[0].description}`;
 
   detailsRainOutput.textContent = `${rain} mm`;
-  detailsWindOutput.textContent = `(${direction}) ${Math.round(weatherData.wind.speed)} m/s`;
-  detailsHumidityOutput.textContent = `${weatherData.main.humidity} %`;
-  detailsTimeOutput. textContent = `${dates[2]} (${weatherData.sys.country})`;
+  detailsWindOutput.textContent = `(${direction}) ${Math.round(currentWeatherData.wind.speed)} m/s`;
+  detailsHumidityOutput.textContent = `${currentWeatherData.main.humidity} %`;
+  detailsTimeOutput. textContent = `${dates[2]} (${currentWeatherData.sys.country})`;
   detailsSunOutput.textContent = `${dates[0]} / ${dates[1]}`;
 
   footerOutput.innerHTML = `
@@ -267,21 +280,21 @@ const displayCurrentWeather = (weatherData) => {
 }
 
 
-const display24hWeather = (foreCastData) => {
+const display24hWeather = (forecast24hData) => {
 
   /*
-    console.log(foreCastData);
+    console.log(forecast24hData);
     // date calc
-  const timezone = foreCastData.city.timezone * 1000;
+  const timezone = forecast24hData.city.timezone * 1000;
   const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }; 
 
-  const time = new Date(foreCastData.list[0].dt * 1000 + timezone).toLocaleString(undefined, dateFormatTimeUTC);
+  const time = new Date(forecast24hData.list[0].dt * 1000 + timezone).toLocaleString(undefined, dateFormatTimeUTC);
   console.log(time);
   */
 
   forecast24hOutput.innerHTML = ``;
 
-  foreCastData.list.forEach((item) => {
+  forecast24hData.list.forEach((item) => {
     const outputHTML = `
       <div class="forecast24h-item">
         <p>${item.dt_txt.slice(10, 16)}</p>
@@ -293,6 +306,33 @@ const display24hWeather = (foreCastData) => {
     `;
     forecast24hOutput.insertAdjacentHTML("beforeend", outputHTML);
   })
+}
+
+
+const display3dWeather = (forecast3dData) => {
+  console.log(forecast3dData);
+
+  forecast3dOutput.innerHTML = ``;
+
+  let filtered3dData = forecast3dData.list.map((el, index) => {
+    // index >= 
+    // datum 
+  })
+
+  for(let i = 0; i < 3 ; i++) {
+    const outputHTML = `
+    <div class="forecast3d-item">
+      <p>Weekday:long</p>
+      <p>Datum</p>
+      <img src="https://openweathermap.org/img/wn/${forecast3dData.list[0].weather[0].icon}.png">
+      <p>Descr</p>
+      <p>Temp °C</p>
+      <p>Wind m/s</p>
+    </div>
+    `;
+  
+    forecast3dOutput.insertAdjacentHTML("beforeend", outputHTML);
+  }
 }
 
 /* ===== STARTUP ACTIONS ===== */

@@ -25,7 +25,7 @@ section {
   position: relative;
   min-width: 370px;
   min-height: 660px;
-  padding: 1.1rem 0.65rem 0.65rem 0.65rem;
+  padding: 1.2rem 0.65rem 0.65rem 0.65rem;
   border: 12px solid var.$color_accent1;
   border-radius: 20px;
 
@@ -73,7 +73,7 @@ button:hover {
 }
 
 .hero {
-  padding-top: 1rem;
+  padding-top: 1.5rem;
   display: flex;
   justify-content: space-between;
 }
@@ -104,8 +104,8 @@ button:hover {
 }
 
 .description {
-    text-align: center;
-    font-size: 1.2rem;
+  text-align: center;
+  font-size: 1.2rem;
 }
 
 .hero__details {
@@ -118,7 +118,7 @@ button:hover {
 }
 
 .forecast24h {
-  padding-top: 1rem;
+  padding-top: 1.5rem;
   display: flex;
   justify-content: space-between;
 
@@ -131,6 +131,25 @@ button:hover {
     align-items: center;
     row-gap: 5px;
     backdrop-filter: blur(15px);
+    border-radius: 10px;
+  }
+}
+
+.forecast3d {
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+
+  .forecast3d-item {
+    padding: 0.5rem;
+    min-width: 90px;
+    font-size: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 5px;
+    backdrop-filter: blur(15px);
+    border-radius: 10px;
   }
 }
 
@@ -185,33 +204,41 @@ button:hover {
 //           ANIMATIONS
 // ==================================
 
-@keyframes glow{
+@keyframes glow {
   0% {
-      box-shadow: -16px -16px 70px 4px white;
+    box-shadow: -16px -16px 70px 4px white;
   }
+
   15% {
-      box-shadow: 10px 10px 70px 4px white;
+    box-shadow: 10px 10px 70px 4px white;
   }
+
   25% {
-      box-shadow: 16px 16px 70px 4px white;
+    box-shadow: 16px 16px 70px 4px white;
   }
+
   35% {
-      box-shadow: 10px 10px 70px 4px white;
+    box-shadow: 10px 10px 70px 4px white;
   }
+
   50% {
-      box-shadow: 16px -16px 70px 4px white;
+    box-shadow: 16px -16px 70px 4px white;
   }
+
   65% {
-      box-shadow: 10px 10px 70px 4px white;
+    box-shadow: 10px 10px 70px 4px white;
   }
+
   75% {
-      box-shadow: -16px 16px 70px 4px white;
+    box-shadow: -16px 16px 70px 4px white;
   }
+
   90% {
-      box-shadow: 10px 10px 70px 4px white;
+    box-shadow: 10px 10px 70px 4px white;
   }
+
   100% {
-      box-shadow: -16px -16px 70px 4px white;
+    box-shadow: -16px -16px 70px 4px white;
   }
 }
 
