@@ -147,8 +147,6 @@ const calcDates = (currentWeatherData) => {
   - API liefert alle Zeiten in UTC (s) --*1000--> JS (ms)
   - Browser immer auto-umrechnung: UTC in vor Ort
   - im format{}: timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
-
-  - .toLocaleDateString("de", weekday:"long")
   */
 
   // Umrechnung UTC (s) -> JS (ms) + API liefert timezone auch in s
@@ -290,8 +288,7 @@ const displayCurrentWeather = (currentWeatherData) => {
 const display24hWeather = (forecast24hData) => {
 
   /*
-    console.log(forecast24hData);
-    // date calc
+  // date calc
   const timezone = forecast24hData.city.timezone * 1000;
   const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }; 
 
@@ -372,7 +369,7 @@ const display3dWeather = (forecast3dData) => {
         // if (new Date(item.dt_txt).getHours() % 6 !== 0) {
         //   return;
         // }
-        console.log(new Date(item.dt_txt).getDate());
+        // console.log(new Date(item.dt_txt).getDate());
         // console.log(item)
         currentDayArray.push(item);
       }
