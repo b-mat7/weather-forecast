@@ -1,7 +1,14 @@
 "use strict"
 
 /* ===== IMPORT & GLOBAL VARIABLES ===== */
-import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
+// import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
+const apiKeyGeoApify = "95e307302fcf40699496737f98e9fd2d";
+const apiKeyOpenWeather = "4e523ff93c839ddd62ce26705bfd07a7";
+
+const endpointGeoApify = "api.geoapify.com";
+const endpointOpenWeather = "api.openweathermap.org";
+
+
 
 const background = document.querySelector("section");
 
@@ -299,7 +306,7 @@ const display24hWeather = (forecast24hData) => {
       <div class="forecast24h-item">
         <p>${item.dt_txt.slice(10, 16)}</p>
         <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}.png">
-        <p>${item.weather[0].main}</p>
+        <p>${item.weather[0].description}</p>
         <p>${Math.round(item.main.temp)} °C</p>
         <p>${Math.round(item.wind.speed)} m/s</p>
       </div>
@@ -310,22 +317,83 @@ const display24hWeather = (forecast24hData) => {
 
 
 const display3dWeather = (forecast3dData) => {
-  console.log(forecast3dData);
+
+  /*
+    if(lastDay === undefined) {
+      lastDay = new Date(sliced3dData[0].dt_txt).getDate();
+      console.log(lastDay)
+    }
+
+    .find()
+    find 1.item where: 
+      new Date(el.dt_txt).getHours() === 0 &&
+      new Date(el.dt_txt).getDate() > lastDate
+
+      set currentDay = new Date(el.dt_txt).getDate()
+
+    .forEach()
+    for all items where:
+      new Date(el.dt_txt).getDate() === currentDay
+
+      currentDayArray.push()
+    
+    lastDay = currentDay
+  */
 
   forecast3dOutput.innerHTML = ``;
 
-  let filtered3dData = forecast3dData.list.map((el, index) => {
-    // index >= 
-    // datum 
-  })
+  let sliced3dData = forecast3dData.list.slice(8);
+  console.log(sliced3dData);
 
-  for(let i = 0; i < 3 ; i++) {
+  
+  let lastDay, currentDay;
+  let currentDayArray = [];
+
+  const fillBuckets = () => {
+
+    if(lastDay === undefined) {
+      lastDay = new Date(sliced3dData[0].dt_txt).getDate();
+      console.log(lastDay)
+    }
+  
+    function setCurrentDay(item) {
+      if(new Date(item.dt_txt).getHours() === 0 &&
+      new Date(item.dt_txt).getDate() > lastDay) {
+        currentDay = new Date(item.dt_txt).getDate();
+        console.log(currentDay);
+        return item;
+      }
+    }
+
+    sliced3dData.find(setCurrentDay);
+  
+    sliced3dData.forEach((item) => {
+      if(new Date(item.dt_txt).getDate() === currentDay){
+        // if (new Date(item.dt_txt).getHours() % 6 !== 0) {
+        //   return;
+        // }
+        console.log(new Date(item.dt_txt).getDate());
+        // console.log(item)
+        currentDayArray.push(item);
+      }
+    })
+    lastDay = currentDay;
+    console.log(lastDay);
+    console.log(currentDay);
+    console.log(currentDayArray);
+
     const outputHTML = `
     <div class="forecast3d-item">
-      <p>Weekday:long</p>
-      <p>Datum</p>
-      <img src="https://openweathermap.org/img/wn/${forecast3dData.list[0].weather[0].icon}.png">
-      <p>Descr</p>
+      <p>${new Date(currentDayArray[0].dt_txt).toLocaleDateString("de", {
+        weekday: "long"
+      })}</p>
+      <p>${new Date(currentDayArray[0].dt_txt).toLocaleDateString("de", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })}</p>
+      <img src="https://openweathermap.org/img/wn/${currentDayArray[4].weather[0].icon}.png">
+      <p>${currentDayArray[4].weather[0].description}</p>
       <p>Temp °C</p>
       <p>Wind m/s</p>
     </div>
@@ -333,6 +401,30 @@ const display3dWeather = (forecast3dData) => {
   
     forecast3dOutput.insertAdjacentHTML("beforeend", outputHTML);
   }
+
+  fillBuckets();
+
+// console.log(new Date(item.dt_txt));
+// console.log(new Date(item.dt_txt).getHours() % 6 !== 0);
+// console.log(new Date(item.dt_txt).getHours());
+// console.log(new Date(item.dt_txt).getDate());
+// console.log(new Date(item.dt_txt).getDay());
+
+
+  // for(let i = 0; i < 3 ; i++) {
+  //   const outputHTML = `
+  //   <div class="forecast3d-item">
+  //     <p>Weekday: </p>
+  //     <p>Datum</p>
+  //     <img src="https://openweathermap.org/img/wn/${forecast3dData.list[0].weather[0].icon}.png">
+  //     <p>Descr</p>
+  //     <p>Temp °C</p>
+  //     <p>Wind m/s</p>
+  //   </div>
+  //   `;
+  
+  //   forecast3dOutput.insertAdjacentHTML("beforeend", outputHTML);
+  // }
 }
 
 /* ===== STARTUP ACTIONS ===== */
