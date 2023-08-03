@@ -25,7 +25,7 @@ section {
   position: relative;
   min-width: 370px;
   min-height: 660px;
-  padding: 1.2rem 0.65rem 0.65rem 0.65rem;
+  padding: 1rem 0.65rem 0.65rem 0.65rem;
   border: 12px solid var.$color_accent1;
   border-radius: 20px;
 
@@ -36,7 +36,7 @@ section {
 }
 
 h1 {
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
 }
 
 input,
@@ -73,7 +73,7 @@ button:hover {
 }
 
 .hero {
-  padding-top: 1.5rem;
+  padding-top: 1rem;
   display: flex;
   justify-content: space-between;
 }
@@ -118,7 +118,7 @@ button:hover {
 }
 
 .forecast24h {
-  padding-top: 1.5rem;
+  padding-top: 1rem;
   display: flex;
   justify-content: space-between;
 
@@ -134,11 +134,15 @@ button:hover {
     row-gap: 5px;
     backdrop-filter: blur(15px);
     border-radius: 10px;
+
+    p:nth-of-type(2) {
+      min-height: 2rem;
+    }
   }
 }
 
 .forecast3d {
-  padding-top: 1.5rem;
+  padding-top: 1rem;
   display: flex;
   justify-content: space-around;
 
@@ -153,11 +157,15 @@ button:hover {
     row-gap: 5px;
     backdrop-filter: blur(15px);
     border-radius: 10px;
+
+    p:nth-of-type(3) {
+      min-height: 2rem;
+    }
   }
 }
 
 .footer {
-  padding-top: 1rem;
+  padding-top: 0.3rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;

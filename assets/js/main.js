@@ -73,7 +73,7 @@ const fetchLocation = () => {
 const fetchCoordinates = (location) => {
   let lat, lon;
 
-  let fetchStrGeo = `http://${endpointOpenWeather}/geo/1.0/direct?q=${location}&limit=1&appid=${apiKeyOpenWeather}`;
+  let fetchStrGeo = `https://${endpointOpenWeather}/geo/1.0/direct?q=${location}&limit=1&appid=${apiKeyOpenWeather}`;
 
   fetch(fetchStrGeo)
     .then(response => {
@@ -93,7 +93,7 @@ const fetchCoordinates = (location) => {
 
 
 const fetchCurrentWeather = (lat, lon) => {
-  let fetchStrCurrent = `https://${endpointOpenWeather}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de`;
+  let fetchStrCurrent = `https://${endpointOpenWeather}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=en`;
 
   fetch(fetchStrCurrent)
   .then(response => {
@@ -107,7 +107,7 @@ const fetchCurrentWeather = (lat, lon) => {
 
 
 const fetch24hWeather = (lat,lon) => {
-  let fetchStr24h = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de&cnt=8`;
+  let fetchStr24h = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=en&cnt=8`;
 
   fetch(fetchStr24h)
     .then(response => {
@@ -121,7 +121,7 @@ const fetch24hWeather = (lat,lon) => {
 
 
 const fetch3dWeather = (lat, lon) => {
-  let fetchStr3d = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=de&cnt=32`;
+  let fetchStr3d = `https://${endpointOpenWeather}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKeyOpenWeather}&units=metric&lang=en&cnt=32`;
 
   fetch(fetchStr3d)
     .then(response => {
@@ -255,9 +255,9 @@ const displayCurrentWeather = (currentWeatherData) => {
   const degrees = currentWeatherData.wind.deg;
   let direction;
   if (degrees > 335 || degrees <= 20) direction = "N";
-  else if (degrees > 20 || degrees <= 65) direction = "NO";
-  else if (degrees > 65 || degrees <= 110) direction = "O";
-  else if (degrees > 110 || degrees <= 155) direction = "SO";
+  else if (degrees > 20 || degrees <= 65) direction = "NE";
+  else if (degrees > 65 || degrees <= 110) direction = "E";
+  else if (degrees > 110 || degrees <= 155) direction = "SE";
   else if (degrees > 155 || degrees <= 200) direction = "S";
   else if (degrees > 200 || degrees <= 245) direction = "SW";
   else if (degrees > 245 || degrees <= 290) direction = "W";
