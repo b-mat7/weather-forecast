@@ -30,7 +30,7 @@ let startUp = true;
 
 
 /* ===== FETCH DATA FUNCTIONS ===== */
-const fetchLocation = () => {
+const startUpFetchLocation = () => {
   if (!startUp) return;
 
   let lat, lon;
@@ -192,7 +192,7 @@ const calcDates = (currentWeatherData) => {
   const sunrise = new Date((currentWeatherData.sys.sunrise * secAsMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
   const sunset = new Date((currentWeatherData.sys.sunset * secAsMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
 
-  // short form for: sunrise:sunrise, sunset:sunset ...
+  // short form for: valueVariable === keyName (sunrise:sunrise...)
   return { sunrise, sunset, remoteTime, timestamp };
 }
 
@@ -429,6 +429,6 @@ const display3dWeather = (forecast3dData) => {
 }
 
 /* ===== STARTUP ACTIONS ===== */
-fetchLocation();
+startUpFetchLocation();
 
 document.body.querySelector(".header button").addEventListener("click", refreshLocation);
