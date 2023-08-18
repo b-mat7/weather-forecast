@@ -236,7 +236,7 @@ const setBackground = (id, remoteTime) => {
     if (remoteTime >= "06:00" && remoteTime <= "11:59") {
       url = "./assets/img/clear/clear_morning.jpeg";
     } else if (remoteTime >= "12:00" && remoteTime <= "17:59") {
-      url = "./assets/img/clear/clear_day.jpeg";
+      url = "./assets/img/clear/clear_day3.jpeg";
     } else if (remoteTime >= "18:00" && remoteTime <= "20:59") {
       url = "./assets/img/clear/clear_evening.jpeg";
     } else {
@@ -244,11 +244,11 @@ const setBackground = (id, remoteTime) => {
     }
   } else if (id >= 800 && id <= 899) {
     if (remoteTime >= "06:00" && remoteTime <= "11:59") {
-      url = "./assets/img/clouds/clouds_morning.jpeg";
+      url = "./assets/img/clouds/clouds_morning2.jpeg";
     } else if (remoteTime >= "12:00" && remoteTime <= "17:59") {
-      url = "./assets/img/clouds/clouds_day.jpeg";
+      url = "./assets/img/clouds/clouds_day4.jpeg";
     } else if (remoteTime >= "18:00" && remoteTime <= "20:59") {
-      url = "./assets/img/clouds/clouds_evening.jpeg";
+      url = "./assets/img/clouds/clouds_evening2.jpeg";
     } else {
       url = "./assets/img/clouds/clouds_night.jpeg";
     }

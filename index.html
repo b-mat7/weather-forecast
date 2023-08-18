@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="./assets/img/favicon.png" /> 
+  <link rel="icon" type="image/svg+xml" href="./assets/img/favicon.png" />
   <link rel="stylesheet" href="./assets/styles/css/style.css">
   <script defer type="module" src="./assets/js/main.js"></script>
   <title>Mat's Weather-Ticker</title>
@@ -14,48 +14,46 @@
   <main>
     <section>
       <h1>Mat's weather Ticker</h1>
-      <article>
-        <div class="header">
-          <input type="text" name="location" id="location">
-          <button>Refresh</button>
+      <div class="header">
+        <input type="text" name="location" id="location">
+        <button>Refresh</button>
+      </div>
+      <div class="hero">
+        <div class="hero__summary">
+          <div class="icon-container"></div>
+          <p class="description"></p>
         </div>
-        <div class="hero">
-          <div class="hero__summary">
-            <div class="icon-container"></div>
-            <p class="description"></p>
+        <div class="hero__details">
+          <div class="hero__details__item">
+            <h4>Rain</h4>
+            <p class="rain"></p>
           </div>
-          <div class="hero__details">
-            <div class="hero__details__item">
-              <h4>Rain</h4>
-              <p class="rain"></p>
-            </div>
-            <div class="hero__details__item">
-              <h4>Wind</h4>
-              <p class="wind"></p>
-            </div>
-            <div class="hero__details__item">
-              <h4>Humidity</h4>
-              <p class="humidity"></p>
-            </div>
-            <div class="hero__details__item">
-              <h4>Time</h4>
-              <p class="time"></p>
-            </div>
-            <div class="hero__details__item">
-              <h4>Sun</h4>
-              <p class="sun"></p>
-            </div>
+          <div class="hero__details__item">
+            <h4>Wind</h4>
+            <p class="wind"></p>
+          </div>
+          <div class="hero__details__item">
+            <h4>Humidity</h4>
+            <p class="humidity"></p>
+          </div>
+          <div class="hero__details__item">
+            <h4>Time</h4>
+            <p class="time"></p>
+          </div>
+          <div class="hero__details__item">
+            <h4>Sun</h4>
+            <p class="sun"></p>
           </div>
         </div>
-        <div class="forecast24h"></div>
-        <div class="forecast3d"></div>
-        <div class="footer"></div>
-      </article>
+      </div>
+      <div class="forecast24h"></div>
+      <div class="forecast3d"></div>
+      <div class="footer"></div>
       <div class="border-item-top"></div>
       <div class="border-item-side1"></div>
       <div class="border-item-side2"></div>
     </section>
-    <p class="device-info">optimized for mobile phone viewport</p>
+    <p class="device-info">also optimized for mobile phone viewport</p>
   </main>
 </body>
 

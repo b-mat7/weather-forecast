@@ -105,7 +105,7 @@ main {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 6rem;
+  gap: 5rem;
   justify-content: center;
   align-items: center;
 }
@@ -169,7 +169,7 @@ button:hover {
 .hero__details {
   width: 156px;
   min-height: 160px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
   border-radius: 20px;
   padding: 0.5rem;
   display: flex;
@@ -217,7 +217,7 @@ button:hover {
   text-align: center;
   overflow: hidden;
   row-gap: 5px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
   border-radius: 10px;
 }
 .forecast24h .forecast24h-item p:nth-of-type(2) {
@@ -238,7 +238,7 @@ button:hover {
   align-items: center;
   text-align: center;
   row-gap: 5px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
   border-radius: 10px;
 }
 .forecast3d .forecast3d-item p:nth-of-type(3) {
@@ -255,7 +255,7 @@ button:hover {
   padding: 0 0.3rem;
   font-size: 0.65rem;
   border-radius: 10px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
 }
 
 .border-item-top {
@@ -333,29 +333,20 @@ button:hover {
   }
 }
 @media screen and (max-width: 425px) {
-  main {
-    height: 100%;
-  }
   section {
     width: 100%;
     min-height: 100vh;
     border: none;
     border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .border-item-top,
   .border-item-side1,
   .border-item-side2,
   .device-info {
     display: none;
-  }
-  h1 {
-    padding-bottom: 1rem;
-  }
-  .hero,
-  .forecast24h,
-  .forecast3d,
-  .footer {
-    padding-top: 1.5rem;
   }
 }
 
