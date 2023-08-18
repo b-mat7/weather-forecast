@@ -1,13 +1,12 @@
 "use strict"
 
-/* ===== IMPORT & GLOBAL VARIABLES ===== */
+/* ===== IMPORT & GLOBAL VARIABLES & EVENT LISTENERS ===== */
 // import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
 const apiKeyGeoApify = "95e307302fcf40699496737f98e9fd2d";
 const apiKeyOpenWeather = "4e523ff93c839ddd62ce26705bfd07a7";
 
 const endpointGeoApify = "https://api.geoapify.com";
 const endpointOpenWeather = "https://api.openweathermap.org";
-
 
 
 const background = document.querySelector("section");
@@ -141,6 +140,12 @@ const fetch3dWeather = (lat, lon) => {
 
 
 /* ===== UTILITY FUNCTIONS ===== */
+const handleKeyPress = (event) => {
+  event.keyCode === 13
+    ? (()=> refreshLocation())()
+    : null;
+}
+
 const refreshLocation = () => {
   const location = document.body.querySelector("#location").value;
   fetchCoordinates(location);
@@ -368,7 +373,8 @@ const display3dWeather = (forecast3dData) => {
   });
 };
 
-/* ===== STARTUP ACTIONS ===== */
+/* ===== STARTUP ===== */
 startUpFetchLocation();
 
 document.body.querySelector(".header button").addEventListener("click", refreshLocation);
+window.addEventListener("keypress", handleKeyPress);
