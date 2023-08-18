@@ -17,15 +17,17 @@ main {
   width: 100%;
   height: 100vh;
   display: flex;
+  flex-direction: column;
+  gap: 6rem;
   justify-content: center;
   align-items: center;
 }
 
 section {
   position: relative;
-  min-width: 370px;
+  min-width: 375px;
   min-height: 660px;
-  padding: 1rem 0.65rem 0.65rem 0.65rem;
+  padding: 1rem 0.4rem 0.65rem 0.4rem;
   border: 12px solid var.$color_accent1;
   border-radius: 20px;
 
@@ -83,7 +85,7 @@ button:hover {
 .hero__details {
   width: 156px;
   min-height: 160px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
   border-radius: 20px;
   padding: 0.5rem;
   display: flex;
@@ -124,7 +126,7 @@ button:hover {
   justify-content: space-between;
 
   .forecast24h-item {
-    padding: 0.3rem 0;
+    padding: 0.2rem 0;
     max-width: 40px;
     font-size: 0.65rem;
     display: flex;
@@ -133,7 +135,7 @@ button:hover {
     text-align: center;
     overflow: hidden;
     row-gap: 5px;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(5px);
     border-radius: 10px;
 
     p:nth-of-type(2) {
@@ -148,15 +150,15 @@ button:hover {
   justify-content: space-around;
 
   .forecast3d-item {
-    padding: 0.5rem;
-    min-width: 90px;
+    padding: 0.3rem 0.1rem;
+    min-width: 80px;
     font-size: 0.65rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     row-gap: 5px;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(5px);
     border-radius: 10px;
 
     p:nth-of-type(3) {
@@ -175,7 +177,7 @@ button:hover {
     padding: 0 0.3rem;
     font-size: 0.65rem;
     border-radius: 10px;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(5px);
   }
 }
 
@@ -308,7 +310,8 @@ button:hover {
 
   .border-item-top,
   .border-item-side1,
-  .border-item-side2 {
+  .border-item-side2
+  .device-info {
     display: none;
   }
 
