@@ -118,7 +118,8 @@ const fetch24hWeather = (lat, lon) => {
       return response.json();
     })
     .then(forecast24hData => {
-      display24hWeather(forecast24hData);
+      const timezoneOffset = forecast24hData.city.timezone;
+      display24hWeather(forecast24hData, timezoneOffset);
     })
     .catch((error) => console.error(error.message));
 }
@@ -290,23 +291,23 @@ const displayCurrentWeather = (currentWeatherData) => {
 }
 
 
-const display24hWeather = (forecast24hData) => {
+const display24hWeather = (forecast24hData, timezoneOffset) => {
 
-  /*
-  // date calc
-  const timezone = forecast24hData.city.timezone * 1000;
-  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }; 
-
-  const time = new Date(forecast24hData.list[0].dt * 1000 + timezone).toLocaleString(undefined, dateFormatTimeUTC);
-  console.log(time);
-  */
+  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
+  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
+  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
+  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
 
   forecast24hOutput.innerHTML = ``;
 
   forecast24hData.list.forEach((item) => {
+
+    const forecastTimeUTC = new Date(item.dt * 1000) // secAsMs
+    const forecastTimeLocal = new Date(forecastTimeUTC.getTime() + timezoneOffset * 1000)
+
     const outputHTML = `
       <div class="forecast24h-item">
-        <p>${item.dt_txt.slice(10, 16)}</p>
+        <p>${forecastTimeLocal.toLocaleTimeString(undefined, dateFormatTimeUTC)}</p>
         <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}.png">
         <p>${item.weather[0].description}</p>
         <p>${Math.round(item.main.temp)} °C</p>
