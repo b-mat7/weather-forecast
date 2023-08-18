@@ -32,7 +32,8 @@ section {
   background-size: cover;
   background-position: center;
 
-  animation: glow 25s infinite;
+  // animation: glow 25s infinite;
+  animation: sparkle 20s infinite alternate;
 }
 
 h1 {
@@ -252,6 +253,38 @@ button:hover {
     box-shadow: -16px -16px 70px 4px white;
   }
 }
+
+
+@keyframes sparkle {
+  0%, 100% {
+    box-shadow: -16px -16px 70px 4px rgba(255, 255, 255, 0.1),
+                16px -16px 70px 4px rgba(255, 255, 255, 0.1),
+                16px 16px 70px 4px rgba(255, 255, 255, 0.1),
+                -16px 16px 70px 4px rgba(255, 255, 255, 0.1);
+  }
+
+  25% {
+    box-shadow: -16px -16px 70px 4px rgba(255, 255, 255, 0.3),
+                16px -16px 70px 4px rgba(255, 255, 255, 0.3),
+                16px 16px 70px 4px rgba(255, 255, 255, 0.3),
+                -16px 16px 70px 4px rgba(255, 255, 255, 0.3);
+  }
+
+  50% {
+    box-shadow: -16px -16px 70px 4px rgba(255, 255, 255, 0.5),
+                16px -16px 70px 4px rgba(255, 255, 255, 0.5),
+                16px 16px 70px 4px rgba(255, 255, 255, 0.5),
+                -16px 16px 70px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  75% {
+    box-shadow: -16px -16px 70px 4px rgba(255, 255, 255, 0.3),
+                16px -16px 70px 4px rgba(255, 255, 255, 0.3),
+                16px 16px 70px 4px rgba(255, 255, 255, 0.3),
+                -16px 16px 70px 4px rgba(255, 255, 255, 0.3);
+  }
+}
+
 
 // ==================================
 //           RESPONSIVENESS
