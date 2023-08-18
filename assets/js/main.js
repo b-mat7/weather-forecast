@@ -134,7 +134,7 @@ const fetch3dWeather = (lat, lon) => {
       return response.json();
     })
     .then(forecast3dData => {
-      display3dWeather(forecast3dData)
+      display3dWeather(forecast3dData);
     })
     .catch((error) => console.error(error.message));
 }
@@ -321,113 +321,52 @@ const display24hWeather = (forecast24hData, timezoneOffset) => {
 
 const display3dWeather = (forecast3dData) => {
 
-  /*
-    if(lastDay === undefined) {
-      lastDay = new Date(sliced3dData[0].dt_txt).getDate();
-      console.log(lastDay)
-    }
-
-    .find()
-    find 1.item where: 
-      new Date(el.dt_txt).getHours() === 0 &&
-      new Date(el.dt_txt).getDate() > lastDate
-
-      set currentDay = new Date(el.dt_txt).getDate()
-
-    .forEach()
-    for all items where:
-      new Date(el.dt_txt).getDate() === currentDay
-
-      currentDayArray.push()
-    
-    lastDay = currentDay
-  */
-
   forecast3dOutput.innerHTML = ``;
   const sliced3dData = forecast3dData.list.slice(8);
-  console.log(sliced3dData);
+  
+  let currentDay = null;
+  let currentDayArray = [];
+  const daysData = [];
 
+  // Iterate through the forecast data and group data by day in daysData [{snapshot1}, ...]
+  sliced3dData.forEach((item) => {
+    const date = new Date(item.dt_txt);
+    const day = date.getDate();
 
-  let lastDay, currentDay;
-  const currentDayArray = [];
+    if (currentDay !== day) {
+      if (currentDay !== null) {
+        daysData.push({
+          day: currentDay,
+          data: [...currentDayArray]
+        });
+      }
 
-  const fillBuckets = () => {
-
-    if (lastDay === undefined) {
-      lastDay = new Date(sliced3dData[0].dt_txt).getDate();
-      console.log(lastDay)
+      currentDay = day;
+      currentDayArray = []; // Reset currentDayArray for the new day
     }
 
-    function setCurrentDay(item) {
-      if (new Date(item.dt_txt).getHours() === 0 &&
-        new Date(item.dt_txt).getDate() > lastDay) {
-        currentDay = new Date(item.dt_txt).getDate();
-        console.log(currentDay);
-        return item;
-      }
-    }
+    currentDayArray.push(item);
+  });
 
-    sliced3dData.find(setCurrentDay);
-
-    sliced3dData.forEach((item) => {
-      if (new Date(item.dt_txt).getDate() === currentDay) {
-        // if (new Date(item.dt_txt).getHours() % 6 !== 0) {
-        //   return;
-        // }
-        // console.log(new Date(item.dt_txt).getDate());
-        // console.log(item)
-        currentDayArray.push(item);
-      }
-    })
-    lastDay = currentDay;
-    console.log(lastDay);
-    console.log(currentDay);
-    console.log(currentDayArray);
+  // Display each day's data
+  daysData.forEach((dayData) => {
+    const avgTemp = dayData.data.reduce((sum, item) => sum + item.main.temp, 0) / dayData.data.length;
+    const avgWind = dayData.data.reduce((sum, item) => sum + item.wind.speed, 0) / dayData.data.length;
 
     const outputHTML = `
-    <div class="forecast3d-item">
-      <p>${new Date(currentDayArray[0].dt_txt).toLocaleDateString("de", {
-      weekday: "long"
-    })}</p>
-      <p>${new Date(currentDayArray[0].dt_txt).toLocaleDateString("de", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })}</p>
-      <img src="https://openweathermap.org/img/wn/${currentDayArray[4].weather[0].icon}.png">
-      <p>${currentDayArray[4].weather[0].description}</p>
-      <p>Temp °C</p>
-      <p>Wind m/s</p>
-    </div>
+      <div class="forecast3d-item">
+        <p>${new Date(dayData.data[0].dt_txt).toLocaleDateString("en", { weekday: "long" })}</p>
+        <p>${new Date(dayData.data[0].dt_txt).toLocaleDateString("de", { year: "numeric", month: "2-digit", day: "2-digit" })}</p>
+        <img src="https://openweathermap.org/img/wn/${dayData.data[0].weather[0].icon}.png">
+        <p>${dayData.data[0].weather[0].description}</p>
+        <p>${Math.round(avgTemp)} °C</p>
+        <p>${Math.round(avgWind)} m/s</p>
+      </div>
     `;
 
     forecast3dOutput.insertAdjacentHTML("beforeend", outputHTML);
-  }
-
-  fillBuckets();
-
-  // console.log(new Date(item.dt_txt));
-  // console.log(new Date(item.dt_txt).getHours() % 6 !== 0);
-  // console.log(new Date(item.dt_txt).getHours());
-  // console.log(new Date(item.dt_txt).getDate());
-  // console.log(new Date(item.dt_txt).getDay());
-
-
-  // for(let i = 0; i < 3 ; i++) {
-  //   const outputHTML = `
-  //   <div class="forecast3d-item">
-  //     <p>Weekday: </p>
-  //     <p>Datum</p>
-  //     <img src="https://openweathermap.org/img/wn/${forecast3dData.list[0].weather[0].icon}.png">
-  //     <p>Descr</p>
-  //     <p>Temp °C</p>
-  //     <p>Wind m/s</p>
-  //   </div>
-  //   `;
-
-  //   forecast3dOutput.insertAdjacentHTML("beforeend", outputHTML);
-  // }
-}
+  });
+};
 
 /* ===== STARTUP ACTIONS ===== */
 startUpFetchLocation();
