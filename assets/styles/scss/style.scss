@@ -297,8 +297,8 @@ button:hover {
 // ========= Mobile ==================
 @media screen and (max-width: 425px) {
   main {
-    width: initial;
-    height: initial;
+    // width: initial;
+    height: 100%;
   }
 
   section {
@@ -310,7 +310,7 @@ button:hover {
 
   .border-item-top,
   .border-item-side1,
-  .border-item-side2
+  .border-item-side2,
   .device-info {
     display: none;
   }
