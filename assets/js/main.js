@@ -244,13 +244,13 @@ const setBackground = (id, remoteTime) => {
     }
   } else if (id >= 800 && id <= 899) {
     if (remoteTime >= "06:00" && remoteTime <= "11:59") {
-      url = "./assets/img/clouds/clouds_morning2.jpeg";
+      url = "./assets/img/clouds/clouds_morning3.jpeg";
     } else if (remoteTime >= "12:00" && remoteTime <= "17:59") {
       url = "./assets/img/clouds/clouds_day4.jpeg";
     } else if (remoteTime >= "18:00" && remoteTime <= "20:59") {
       url = "./assets/img/clouds/clouds_evening2.jpeg";
     } else {
-      url = "./assets/img/clouds/clouds_night.jpeg";
+      url = "./assets/img/clouds/clouds_night2.jpeg";
     }
   }
   background.style.backgroundImage = `url(${url})`;
