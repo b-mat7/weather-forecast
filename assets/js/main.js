@@ -1,14 +1,9 @@
 "use strict"
 
-/* ===== IMPORT & GLOBAL VARIABLES & EVENT LISTENERS ===== */
-// import {apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather} from "./api.js";
-const apiKeyGeoApify = "95e307302fcf40699496737f98e9fd2d";
-const apiKeyOpenWeather = "4e523ff93c839ddd62ce26705bfd07a7";
+/* ===== IMPORT & GLOBAL VARIABLES ===== */
+import { apiKeyGeoApify, apiKeyOpenWeather, endpointGeoApify, endpointOpenWeather } from "./api.js";
 
-const endpointGeoApify = "https://api.geoapify.com";
-const endpointOpenWeather = "https://api.openweathermap.org";
-
-
+// Html elements
 const background = document.querySelector("section");
 
 const summaryIconOutput = document.querySelector(".icon-container");
@@ -25,6 +20,13 @@ const forecast3dOutput = document.querySelector(".forecast3d");
 
 const footerOutput = document.querySelector(".footer");
 
+// Date formating objects
+const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
+const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
+const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
+const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
+
+const secAsMs = 1000;
 let startUp = true;
 
 
@@ -60,9 +62,9 @@ const startUpFetchLocation = () => {
       .then(ipData => {
         const location = ipData.city.name;
         document.body.querySelector("#location").value = ipData.city.name;
-        fetchCoordinates(location)
+        fetchCoordinates(location);
       })
-      .catch((error) => console.error(error.message))
+      .catch((error) => console.error(error.message));
   } else {
     fetchCurrentWeather(lat, lon);
   }
@@ -72,7 +74,6 @@ const startUpFetchLocation = () => {
 
 const fetchCoordinates = (location) => {
   let lat, lon;
-
   const fetchStrGeo = `${endpointOpenWeather}/geo/1.0/direct?q=${location}&limit=1&appid=${apiKeyOpenWeather}`;
 
   fetch(fetchStrGeo)
@@ -142,9 +143,10 @@ const fetch3dWeather = (lat, lon) => {
 /* ===== UTILITY FUNCTIONS ===== */
 const handleKeyPress = (event) => {
   event.keyCode === 13
-    ? (()=> refreshLocation())()
+    ? (() => refreshLocation())()
     : null;
 }
+
 
 const refreshLocation = () => {
   const location = document.body.querySelector("#location").value;
@@ -153,21 +155,14 @@ const refreshLocation = () => {
 
 
 const calcDates = (currentWeatherData) => {
-
   /*
-  - API liefert alle Zeiten in UTC (s) --*1000--> JS (ms)
+  - API liefert alle Zeiten in UTC (s) -- *1000 --> JS (ms) (secAsMs global variable)
   - Browser immer auto-umrechnung: UTC in vor Ort
-  - im format{}: timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
+  - im format{} (global variable): timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
   */
 
   // Umrechnung UTC (s) -> JS (ms) + API liefert timezone auch in s
-  const secAsMs = 1000;
   const timezone = currentWeatherData.timezone * secAsMs;
-
-  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
-  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
-  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
-  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
 
   // Zeit des letzten Datensatzes (Date-Time in UTC)
   const dtUtc = new Date(currentWeatherData.dt * secAsMs);
@@ -184,21 +179,11 @@ const calcDates = (currentWeatherData) => {
   const dtRemoteDate = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
   const dtRemoteTime = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
 
-  // console.log(userDate);
-  // console.log(userTime);
-  // console.log(dtUserDate);
-  // console.log(dtUserTime);
-
-  // console.log(remoteDate);
-  // console.log(remoteTime);
-  // console.log(dtRemoteDate);
-  // console.log(dtRemoteTime);
-
   const timestamp = new Date(Date.now()).toLocaleString("de");
   const sunrise = new Date((currentWeatherData.sys.sunrise * secAsMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
   const sunset = new Date((currentWeatherData.sys.sunset * secAsMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
 
-  // short form for: valueVariable === keyName (sunrise:sunrise...)
+  // short form for: valueVariable === keyName (sunrise: sunrise...)
   return { sunrise, sunset, remoteTime, timestamp };
 }
 
@@ -290,25 +275,16 @@ const displayCurrentWeather = (currentWeatherData) => {
   detailsTimeOutput.textContent = `${dates.remoteTime} (${currentWeatherData.sys.country})`;
   detailsSunOutput.textContent = `${dates.sunrise} / ${dates.sunset}`;
 
-  footerOutput.innerHTML = `
-    <p>${dates.timestamp}</p>
-  `;
+  footerOutput.innerHTML = `<p>${dates.timestamp}</p>`;
 }
 
 
 const display24hWeather = (forecast24hData, timezoneOffset) => {
-
-  const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
-  const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
-  const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
-  const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
-
   forecast24hOutput.innerHTML = ``;
 
   forecast24hData.list.forEach((item) => {
-
-    const forecastTimeUTC = new Date(item.dt * 1000) // secAsMs
-    const forecastTimeLocal = new Date(forecastTimeUTC.getTime() + timezoneOffset * 1000)
+    const forecastTimeUTC = new Date(item.dt * secAsMs);
+    const forecastTimeLocal = new Date(forecastTimeUTC.getTime() + timezoneOffset * secAsMs);
 
     const outputHTML = `
       <div class="forecast24h-item">
@@ -325,10 +301,9 @@ const display24hWeather = (forecast24hData, timezoneOffset) => {
 
 
 const display3dWeather = (forecast3dData) => {
-
   forecast3dOutput.innerHTML = ``;
+
   const sliced3dData = forecast3dData.list.slice(8);
-  
   let currentDay = null;
   let currentDayArray = [];
   const daysData = [];
@@ -345,15 +320,13 @@ const display3dWeather = (forecast3dData) => {
           data: [...currentDayArray]
         });
       }
-
       currentDay = day;
       currentDayArray = []; // Reset currentDayArray for the new day
     }
-
     currentDayArray.push(item);
   });
 
-  // Display each day's data
+  // Display each day's data replacing night icons with day version
   daysData.forEach((dayData) => {
     const avgTemp = dayData.data.reduce((sum, item) => sum + item.main.temp, 0) / dayData.data.length;
     const avgWind = dayData.data.reduce((sum, item) => sum + item.wind.speed, 0) / dayData.data.length;
@@ -362,13 +335,12 @@ const display3dWeather = (forecast3dData) => {
       <div class="forecast3d-item">
         <p>${new Date(dayData.data[0].dt_txt).toLocaleDateString("en", { weekday: "long" })}</p>
         <p>${new Date(dayData.data[0].dt_txt).toLocaleDateString("de", { year: "numeric", month: "2-digit", day: "2-digit" })}</p>
-        <img src="https://openweathermap.org/img/wn/${dayData.data[0].weather[0].icon}.png">
+        <img src="https://openweathermap.org/img/wn/${dayData.data[0].weather[0].icon.replace("n", "d")}.png">
         <p>${dayData.data[0].weather[0].description}</p>
         <p>${Math.round(avgTemp)} °C</p>
         <p>${Math.round(avgWind)} m/s</p>
       </div>
     `;
-
     forecast3dOutput.insertAdjacentHTML("beforeend", outputHTML);
   });
 };
