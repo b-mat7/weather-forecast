@@ -45,7 +45,7 @@ At startup, the website tries to locate you using your browser's location inform
 
 Using the coordinates, it retrieves the appropriate information from openweathermap's current weather forecast and 5-day and 3-hour forecast APIs, adjusting the background based on weather conditions and local (remote) time.
 
-The ability to remotely query cities worldwide completes the feature set.
+The ability to query the weather in any city worldwide completes the feature set.
 
 Project Link: [https://b-mat7.github.io/Weather-forecast/](https://b-mat7.github.io/Weather-forecast/)
 
