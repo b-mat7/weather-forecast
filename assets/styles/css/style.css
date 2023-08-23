@@ -119,7 +119,7 @@ section {
   border-radius: 20px;
   background-size: cover;
   background-position: center;
-  animation: sparkle 20s infinite alternate;
+  animation: sparkle 10s infinite alternate;
 }
 
 h1 {
