@@ -21,10 +21,10 @@ const forecast3dOutput = document.querySelector(".forecast3d");
 const footerOutput = document.querySelector(".footer");
 
 // Date formating objects
-const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }    // Browser auto-umrechnung in vor Ort Zeit
-const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }  // Browser auto-umrechnung in vor Ort Zeit
-const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }    // timezone:UTC === Browser keine auto-umrechnung
-const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }  // timezone:UTC === Browser keine auto-umrechnung
+const dateFormatDateUser = { day: "2-digit", month: "short", year: "numeric" }
+const dateFormatTimeUser = { hour12: false, hour: "2-digit", minute: "2-digit" }
+const dateFormatDateUTC = { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }
+const dateFormatTimeUTC = { timeZone: "UTC", hour12: false, hour: "2-digit", minute: "2-digit" }
 
 const secAsMs = 1000;
 let startUp = true;
@@ -36,7 +36,6 @@ const startUpFetchLocation = () => {
 
   let lat, lon;
   if ("geolocation" in navigator) {
-    // Prompt user for permission to access their location
     navigator.geolocation.getCurrentPosition(
       (position) => {
         lat = position.coords.latitude;
@@ -155,35 +154,14 @@ const refreshLocation = () => {
 
 
 const calcDates = (currentWeatherData) => {
-  /*
-  - API liefert alle Zeiten in UTC (s) -- *1000 --> JS (ms) (secAsMs global variable)
-  - Browser immer auto-umrechnung: UTC in vor Ort
-  - im format{} (global variable): timezone: UTC --> Sage Browser deine vor Ort Zeit ist UTC, nicht umrechnen
-  */
-
-  // Umrechnung UTC (s) -> JS (ms) + API liefert timezone auch in s
   const timezone = currentWeatherData.timezone * secAsMs;
 
-  // Zeit des letzten Datensatzes (Date-Time in UTC)
-  const dtUtc = new Date(currentWeatherData.dt * secAsMs);
-
-  // User vor Ort Zeiten (aktuell + Datensatz) - vom Browser auto-umgerechnet
-  const userDate = new Date(Date.now()).toLocaleString(undefined, dateFormatDateUser); // aktuelle Zeit - User vor Ort-Zeitzone
-  const userTime = new Date(Date.now()).toLocaleString(undefined, dateFormatTimeUser); // aktuelle Zeit - User vor Ort-Zeitzone
-  const dtUserDate = new Date(dtUtc).toLocaleString(undefined, dateFormatDateUser);    // datensatz Zeit - User vor Ort-Zeitzone
-  const dtUserTime = new Date(dtUtc).toLocaleString(undefined, dateFormatTimeUser);    // datensatz Zeit - User vor Ort-Zeitzone
-
-  // Remote Ort Zeiten (aktuell + Datensatz) - keine Browser auto-umrechnung
-  const remoteDate = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatDateUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
-  const remoteTime = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatTimeUTC); // aktuelle Zeit - remote Ort-Zeitzone (von uns gerechnet)
-  const dtRemoteDate = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatDateUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
-  const dtRemoteTime = new Date(dtUtc + timezone).toLocaleString(undefined, dateFormatTimeUTC);    // datensatz Zeit - remote Ort-Zeitzone (von uns gerechnet)
+  const remoteTime = new Date(Date.now() + timezone).toLocaleString(undefined, dateFormatTimeUTC);
 
   const timestamp = new Date(Date.now()).toLocaleString("de");
   const sunrise = new Date((currentWeatherData.sys.sunrise * secAsMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
   const sunset = new Date((currentWeatherData.sys.sunset * secAsMs) + timezone).toLocaleString(undefined, dateFormatTimeUTC);
 
-  // short form for: valueVariable === keyName (sunrise: sunrise...)
   return { sunrise, sunset, remoteTime, timestamp };
 }
 
@@ -308,7 +286,7 @@ const display3dWeather = (forecast3dData) => {
   let currentDayArray = [];
   const daysData = [];
 
-  // Iterate through the forecast data and group data by day in daysData [{snapshot1}, ...]
+  // Iterate through the forecast data and group data by day in daysData
   sliced3dData.forEach((item) => {
     const date = new Date(item.dt_txt);
     const day = date.getDate();
@@ -321,7 +299,7 @@ const display3dWeather = (forecast3dData) => {
         });
       }
       currentDay = day;
-      currentDayArray = []; // Reset currentDayArray for the new day
+      currentDayArray = [];
     }
     currentDayArray.push(item);
   });
