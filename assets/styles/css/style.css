@@ -335,7 +335,7 @@ button:hover {
 @media screen and (max-width: 425px) {
   section {
     width: 100%;
-    min-height: 100vh;
+    height: 100dvh;
     border: none;
     border-radius: 0;
     display: flex;
